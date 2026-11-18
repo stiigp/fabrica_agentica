@@ -1,7 +1,11 @@
-"""Ajuda e ponto de entrada da interface de terminal."""
+"""Argumentos, ajuda e ponto de entrada da interface de terminal."""
 
 import argparse
+from pathlib import Path
+import re
 import sys
+
+from .modelo import ErroValidacao, validar_descricao
 
 
 class _Parser(argparse.ArgumentParser):
@@ -16,26 +20,80 @@ class _Parser(argparse.ArgumentParser):
         self.exit(2, "Erro: entrada inválida. Consulte --help.\n")
 
 
-def main(argv=None) -> int:
-    """Executa a interface inicial sem consultar dados locais."""
-    parser = _Parser(
-        prog="python -m tarefas",
-        add_help=False,
-        description="Gerenciar tarefas pelo terminal.",
-        epilog=(
-            "Operações previstas: adicionar, listar e concluir. "
-            "A opção global --arquivo CAMINHO selecionará os dados locais. "
-            "Nesta etapa, somente a ajuda está disponível."
-        ),
-    )
+def _opcoes(parser):
     opcoes = parser.add_argument_group("opções")
     opcoes.add_argument(
         "-h", "--help", action="help", help="mostrar esta ajuda e sair"
     )
+    return opcoes
+
+
+def _criar_parser():
+    parser = _Parser(
+        prog="python -m tarefas",
+        add_help=False,
+        allow_abbrev=False,
+        description="Gerenciar tarefas pelo terminal.",
+        epilog="As operações de tarefas serão disponibilizadas nas próximas etapas.",
+    )
+    _opcoes(parser).add_argument(
+        "--arquivo", metavar="CAMINHO", help="selecionar o arquivo de dados locais"
+    )
+    comandos = parser.add_subparsers(
+        dest="comando", title="comandos", metavar="COMANDO", required=True
+    )
+    for nome, descricao in (
+        ("adicionar", "adicionar uma tarefa com descrição obrigatória"),
+        ("listar", "listar identificador, descrição e status das tarefas"),
+        ("concluir", "marcar uma tarefa como concluída pelo identificador"),
+    ):
+        subparser = comandos.add_parser(
+            nome, add_help=False, allow_abbrev=False,
+            description=descricao, help=descricao,
+        )
+        _opcoes(subparser)
+        argumentos = subparser.add_argument_group("argumentos")
+        if nome == "adicionar":
+            argumentos.add_argument(
+                "descricao", nargs="?", metavar="DESCRICAO", help="descrição da tarefa"
+            )
+        elif nome == "concluir":
+            argumentos.add_argument(
+                "id", nargs="?", metavar="ID", help="identificador inteiro positivo"
+            )
+    return parser
+
+
+def _interpretar_argumentos(argv=None):
+    argumentos = _criar_parser().parse_args(argv)
+    if argumentos.comando == "adicionar":
+        validar_descricao(argumentos.descricao)
+    elif argumentos.comando == "concluir":
+        if argumentos.id is None or re.fullmatch(r"[1-9][0-9]*", argumentos.id) is None:
+            raise ErroValidacao("informe um identificador inteiro positivo.")
+        argumentos.id = int(argumentos.id)
+    return argumentos
+
+
+def _resolver_caminho(arquivo):
+    if arquivo is not None:
+        return Path(arquivo)
+    return Path.home() / ".tarefas" / "tarefas.json"
+
+
+def main(argv=None) -> int:
+    """Valida a entrada antes de resolver o caminho dos dados."""
     try:
-        parser.parse_args(argv)
+        argumentos = _interpretar_argumentos(argv)
     except SystemExit as saida:
         return int(saida.code)
-    parser.print_usage(sys.stderr)
-    print("Erro: informe um comando. Consulte --help.", file=sys.stderr)
-    return 2
+    except ErroValidacao as erro:
+        print(f"Erro: {erro}", file=sys.stderr)
+        return 2
+    try:
+        _resolver_caminho(argumentos.arquivo)
+    except (OSError, RuntimeError):
+        print("Erro: não foi possível ler os dados locais.", file=sys.stderr)
+        return 1
+    print("Erro: operação ainda não disponível.", file=sys.stderr)
+    return 1

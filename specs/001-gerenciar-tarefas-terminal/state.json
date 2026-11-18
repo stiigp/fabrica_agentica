@@ -159,7 +159,7 @@
       "status": "em_andamento",
       "agent": "desenvolvedor",
       "devolucoes": 0,
-      "current_phase": "Foundational",
+      "current_phase": "US1",
       "phases": {
         "Setup": {
           "status": "aprovado",
@@ -178,13 +178,36 @@
             "Arquivos lidos pelo orquestrador; somente marcacoes T001/T002 alteradas.",
             "git diff --check saida0; raiz somente arquivos previstos."
           ]
+        },
+        "Foundational": {
+          "status": "aprovado",
+          "tasks": [
+            "T003",
+            "T004",
+            "T005"
+          ],
+          "tests": 42,
+          "test_runs": 2,
+          "test_exit_codes": [
+            0,
+            0
+          ],
+          "build_exit_code": 0,
+          "evidence": [
+            "Modelo/parser/armazenamento e testes conferidos pelo orquestrador.",
+            "JSON invalido, campos/tipos/IDs, falhas deterministicas e preservacao do original cobertos.",
+            "Regressao Windows ancestral arquivo coberta; somente tarefas da fase marcadas."
+          ]
         }
       }
     }
   },
   "tasks_done": [
     "T001",
-    "T002"
+    "T002",
+    "T003",
+    "T004",
+    "T005"
   ],
   "correction_rounds": 0,
   "blockers": [],
@@ -195,5 +218,5 @@
       "mensagem": "aprovo"
     }
   },
-  "updated_at": "2026-11-18T20:46:06.686Z"
+  "updated_at": "2026-11-18T21:00:18.397Z"
 }
