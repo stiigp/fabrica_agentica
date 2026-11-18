@@ -1,92 +1,177 @@
 ﻿{
-    "feature":  "001-gerenciar-tarefas-terminal",
-    "base_branch":  "main",
-    "branch":  "001-gerenciar-tarefas-terminal",
-    "gh_path":  "gh",
-    "pull_request":  null,
-    "commands":  {
-                     "test":  null,
-                     "lint":  null,
-                     "build":  null
-                 },
-    "last_reviewed_commit":  null,
-    "stage":  "ESPECIFICACAO_APROVADA",
-    "artifacts":  {
-                      "specification":  {
-                                            "path":  "specs/001-gerenciar-tarefas-terminal/spec.md",
-                                            "stage":  "E1",
-                                            "skill":  "speckit-specify"
-                                        },
-                      "requirements_checklist":  {
-                                                     "path":  "specs/001-gerenciar-tarefas-terminal/checklists/requirements.md",
-                                                     "stage":  "E1",
-                                                     "skill":  "speckit-specify"
-                                                 },
-                      "active_feature":  {
-                                             "path":  ".specify/feature.json",
-                                             "stage":  "E1",
-                                             "skill":  "speckit-specify",
-                                             "local_only":  true,
-                                             "note":  "Ponteiro local ignorado por .specify/.gitignore, preservado no disco."
-                                         }
-                  },
-    "gates":  {
-                  "E0":  {
-                             "status":  "aprovado",
-                             "base_commit":  "24eea59",
-                             "constitution_version":  "1.0.0",
-                             "origin":  "https://github.com/stiigp/fabrica_agentica.git",
-                             "evidence":  [
-                                              "git rev-parse --is-inside-work-tree: true, saida 0",
-                                              "git log -1: 24eea59, saida 0",
-                                              "git status --porcelain: vazio antes de E1, saida 0",
-                                              "git branch --show-current: main antes de E1, saida 0",
-                                              "gh auth status fora da sandbox: autenticado como stiigp, saida 0",
-                                              "Nenhuma feature ativa antes de E1; constituicao preenchida."
-                                          ]
-                         },
-                  "E1":  {
-                             "status":  "aprovado",
-                             "agent":  "analista_requisitos",
-                             "agent_status":  "HUMAN_REVIEW_REQUIRED",
-                             "devolucoes":  0,
-                             "stories":  3,
-                             "acceptance_scenarios":  16,
-                             "functional_requirements":  12,
-                             "success_criteria":  5,
-                             "checklist":  {
-                                               "checked":  16,
-                                               "total":  16
-                                           },
-                             "evidence":  [
-                                              "Orquestrador leu integralmente spec.md e checklists/requirements.md.",
-                                              "Validacao PowerShell do ponteiro ativo, ausencia de duvidas, 12 FR, 5 SC e 16 itens completos: saida 0.",
-                                              "git branch --show-current: 001-gerenciar-tarefas-terminal apos criacao da branch.",
-                                              "git diff --check: saida 0; raiz sem arquivos de controle indevidos.",
-                                              "Testes de produto nao aplicaveis: apenas especificacao produzida."
-                                          ],
-                             "assumptions":  [
-                                                 "Tarefas novas ficam pendentes; descricao apenas em branco e invalida.",
-                                                 "Descricoes repetidas sao permitidas, com identificadores distintos e estaveis.",
-                                                 "Conclusao repetida informa o estado atual e nao altera os dados.",
-                                                 "Persistencia local entre execucoes sequenciais; concorrencia e recuperacao de interrupcao abrupta fora do aceite.",
-                                                 "Tecnologia, armazenamento e comandos concretos serao definidos pelo Arquiteto somente apos aprovacao humana."
-                                             ]
-                         }
-              },
-    "tasks_done":  [
-
-                   ],
-    "correction_rounds":  0,
-    "blockers":  [
-
-                 ],
-    "human_checkpoints":  {
-                              "specification_review":  {
-                                                           "status":  "aprovado",
-                                                           "aprovado_em":  "2026-11-18T20:10:46.2112293Z",
-                                                           "mensagem":  "aprovo"
-                                                       }
-                          },
-    "updated_at":  "2026-11-18T20:10:46.2112293Z"
+  "feature": "001-gerenciar-tarefas-terminal",
+  "base_branch": "main",
+  "branch": "001-gerenciar-tarefas-terminal",
+  "gh_path": "gh",
+  "pull_request": null,
+  "commands": {
+    "test": "python -m unittest discover -s tests -t . -v",
+    "lint": null,
+    "build": "python -m compileall -q tarefas tests"
+  },
+  "last_reviewed_commit": null,
+  "stage": "IMPLEMENTANDO",
+  "artifacts": {
+    "specification": {
+      "path": "specs/001-gerenciar-tarefas-terminal/spec.md",
+      "stage": "E1",
+      "skill": "speckit-specify"
+    },
+    "requirements_checklist": {
+      "path": "specs/001-gerenciar-tarefas-terminal/checklists/requirements.md",
+      "stage": "E1",
+      "skill": "speckit-specify"
+    },
+    "active_feature": {
+      "path": ".specify/feature.json",
+      "stage": "E1",
+      "skill": "speckit-specify",
+      "local_only": true,
+      "note": "Ponteiro local ignorado por .specify/.gitignore, preservado no disco."
+    },
+    "plan.md": {
+      "path": "specs/001-gerenciar-tarefas-terminal/plan.md",
+      "stage": "E2",
+      "skill": "speckit-plan"
+    },
+    "research.md": {
+      "path": "specs/001-gerenciar-tarefas-terminal/research.md",
+      "stage": "E2",
+      "skill": "speckit-plan"
+    },
+    "data-model.md": {
+      "path": "specs/001-gerenciar-tarefas-terminal/data-model.md",
+      "stage": "E2",
+      "skill": "speckit-plan"
+    },
+    "contracts/cli.md": {
+      "path": "specs/001-gerenciar-tarefas-terminal/contracts/cli.md",
+      "stage": "E2",
+      "skill": "speckit-plan"
+    },
+    "quickstart.md": {
+      "path": "specs/001-gerenciar-tarefas-terminal/quickstart.md",
+      "stage": "E2",
+      "skill": "speckit-plan"
+    },
+    "tasks.md": {
+      "path": "specs/001-gerenciar-tarefas-terminal/tasks.md",
+      "stage": "E3",
+      "skill": "speckit-tasks"
+    }
+  },
+  "gates": {
+    "E0": {
+      "status": "aprovado",
+      "base_commit": "24eea59",
+      "constitution_version": "1.0.0",
+      "origin": "https://github.com/stiigp/fabrica_agentica.git",
+      "evidence": [
+        "git rev-parse --is-inside-work-tree: true, saida 0",
+        "git log -1: 24eea59, saida 0",
+        "git status --porcelain: vazio antes de E1, saida 0",
+        "git branch --show-current: main antes de E1, saida 0",
+        "gh auth status fora da sandbox: autenticado como stiigp, saida 0",
+        "Nenhuma feature ativa antes de E1; constituicao preenchida."
+      ]
+    },
+    "E1": {
+      "status": "aprovado",
+      "agent": "analista_requisitos",
+      "agent_status": "HUMAN_REVIEW_REQUIRED",
+      "devolucoes": 0,
+      "stories": 3,
+      "acceptance_scenarios": 16,
+      "functional_requirements": 12,
+      "success_criteria": 5,
+      "checklist": {
+        "checked": 16,
+        "total": 16
+      },
+      "evidence": [
+        "Orquestrador leu integralmente spec.md e checklists/requirements.md.",
+        "Validacao PowerShell do ponteiro ativo, ausencia de duvidas, 12 FR, 5 SC e 16 itens completos: saida 0.",
+        "git branch --show-current: 001-gerenciar-tarefas-terminal apos criacao da branch.",
+        "git diff --check: saida 0; raiz sem arquivos de controle indevidos.",
+        "Testes de produto nao aplicaveis: apenas especificacao produzida."
+      ],
+      "assumptions": [
+        "Tarefas novas ficam pendentes; descricao apenas em branco e invalida.",
+        "Descricoes repetidas sao permitidas, com identificadores distintos e estaveis.",
+        "Conclusao repetida informa o estado atual e nao altera os dados.",
+        "Persistencia local entre execucoes sequenciais; concorrencia e recuperacao de interrupcao abrupta fora do aceite.",
+        "Tecnologia, armazenamento e comandos concretos serao definidos pelo Arquiteto somente apos aprovacao humana."
+      ]
+    },
+    "E2": {
+      "status": "aprovado",
+      "agent": "arquiteto",
+      "devolucoes": 0,
+      "constitution_check": "aprovado pre e pos design",
+      "evidence": [
+        "Cinco artefatos lidos e conferidos pelo orquestrador; comandos e justificativas declarados; todos FR e SC mapeados.",
+        "git diff --check sem erros; raiz sem controle indevido; branch correta."
+      ],
+      "assumptions": [
+        "Python >=3.10 sem dependencias externas.",
+        "JSON UTF-8 esquema 1, temporario e os.replace; ID max+1.",
+        "CLI adicionar/listar/concluir com --arquivo; unittest com temporarios ficticios.",
+        "Testes Desenvolvedor em unit/integration; QA em acceptance; lint/typecheck nao aplicaveis."
+      ]
+    },
+    "E3": {
+      "status": "aprovado",
+      "agent": "criador_tarefas",
+      "devolucoes": 0,
+      "total_tasks": 13,
+      "phases": {
+        "Setup": 2,
+        "Foundational": 3,
+        "US1": 3,
+        "US2": 2,
+        "US3": 2,
+        "Polish": 1
+      },
+      "evidence": [
+        "tasks.md lido integralmente pelo orquestrador; IDs T001-T013, caminhos, fases e etiquetas US corretos.",
+        "Todos 12 FR mapeados; cinco campos canonicos citados em tarefas implementadoras.",
+        "Aceite QA reservado a E6; todas tarefas E4 executaveis pelo Desenvolvedor."
+      ]
+    },
+    "E3.5": {
+      "status": "aprovado",
+      "skill": "speckit-analyze",
+      "critical_issues": 0,
+      "high_issues": 0,
+      "coverage_percent": 100,
+      "requirements_count": 17,
+      "tasks_count": 13,
+      "constrained_fields": 5,
+      "unmapped_tasks": [],
+      "evidence": [
+        "check-prerequisites.ps1 -Json -RequireSpec -RequireTasks -IncludeTasks: saida 0.",
+        "Analise sem alteracao de artefatos; nenhum achado; todos 12 FR e 5 SC cobertos.",
+        "Cinco campos canonicos com citacao implementadora; dependencias e responsabilidades coerentes.",
+        "Hooks ausentes; nenhuma remediacao necessaria."
+      ]
+    },
+    "E4": {
+      "status": "em_andamento",
+      "agent": "desenvolvedor",
+      "devolucoes": 0,
+      "current_phase": "Setup",
+      "phases": {}
+    }
+  },
+  "tasks_done": [],
+  "correction_rounds": 0,
+  "blockers": [],
+  "human_checkpoints": {
+    "specification_review": {
+      "status": "aprovado",
+      "aprovado_em": "2026-11-18T20:10:46.2112293Z",
+      "mensagem": "aprovo"
+    }
+  },
+  "updated_at": "2026-11-18T20:35:15.396Z"
 }
