@@ -1,4 +1,4 @@
-"""Adição pura: US1; FR-002/003/004; SC-001."""
+"""Operações puras: US1/US2; FR-002/003/004/006/007; SC-001/002/003."""
 
 from contextlib import redirect_stderr, redirect_stdout
 import io
@@ -6,7 +6,7 @@ import unittest
 from unittest.mock import patch
 
 from tarefas.modelo import ErroValidacao, Tarefa
-from tarefas.servico import adicionar
+from tarefas.servico import TarefaNaoEncontrada, adicionar, concluir
 
 
 class AdicaoTests(unittest.TestCase):
@@ -52,3 +52,43 @@ class AdicaoTests(unittest.TestCase):
                 with self.assertRaisesRegex(ErroValidacao, "descrição é obrigatória"):
                     adicionar(original, descricao)
                 self.assertEqual(original, [Tarefa(4, "Tarefa fictícia")])
+
+
+class ConclusaoTests(unittest.TestCase):
+    def setUp(self):
+        self.original = [
+            Tarefa(4, '  Preparar relatório | "A"\nB\t  '),
+            Tarefa(2, "Outra pendente"),
+            Tarefa(9, "Concluída anterior", "concluida"),
+        ]
+
+    def test_concluir_muda_so_status_preserva_original_sem_io_us2_sc002(self):
+        antes = list(self.original)
+        stdout, stderr = io.StringIO(), io.StringIO()
+        with patch("builtins.open", side_effect=AssertionError("I/O indevido")), patch(
+            "pathlib.Path.home", side_effect=AssertionError("home indevido")
+        ), redirect_stdout(stdout), redirect_stderr(stderr):
+            novas, alterou = concluir(self.original, 4)
+        self.assertTrue(alterou)
+        self.assertIsNot(novas, self.original)
+        self.assertEqual(novas, [Tarefa(4, antes[0].descricao, "concluida"), *antes[1:]])
+        self.assertEqual(self.original, antes)
+        self.assertEqual(stdout.getvalue(), "")
+        self.assertEqual(stderr.getvalue(), "")
+
+    def test_concluir_ja_concluida_informa_ausencia_de_mudanca_fr006(self):
+        antes = list(self.original)
+        novas, alterou = concluir(self.original, 9)
+        self.assertFalse(alterou)
+        self.assertEqual(novas, antes)
+        self.assertEqual(self.original, antes)
+
+    def test_identificador_inexistente_nao_muda_colecao_fr007_sc003(self):
+        for original in ([], self.original):
+            antes = list(original)
+            for identificador in (999, 10**100):
+                with self.subTest(quantidade=len(original), identificador=identificador):
+                    with self.assertRaises(TarefaNaoEncontrada) as capturado:
+                        concluir(original, identificador)
+                    self.assertEqual(str(capturado.exception), f"tarefa {identificador} não encontrada.")
+                    self.assertEqual(original, antes)

@@ -1,4 +1,4 @@
-"""Fronteira CLI/processos: US1; FR-001 a FR-005, FR-008 a FR-012; SC-001/003."""
+"""Fronteira CLI/processos: US1/US2; FR-001 a FR-012; SC-001/002/003."""
 
 from contextlib import redirect_stderr, redirect_stdout
 import io
@@ -43,6 +43,84 @@ class CliProcessoTests(unittest.TestCase):
         self.assertEqual(resultado.returncode, 0, resultado.stderr)
         self.assertEqual(resultado.stdout, stdout)
         self.assertEqual(resultado.stderr, "")
+
+    def preparar_us2(self):
+        documento = {
+            "schema_version": 1,
+            "tarefas": [
+                {"id": 4, "descricao": '  Preparar relatório | "A"\nB\t  ', "status": "pendente"},
+                {"id": 2, "descricao": "Outra pendente", "status": "pendente"},
+                {"id": 9, "descricao": "Concluída anterior", "status": "concluida"},
+            ],
+        }
+        self.arquivo.write_text(
+            json.dumps(documento, ensure_ascii=False, indent=3) + "\n \t", encoding="utf-8"
+        )
+        return documento
+
+    def test_us2_muda_so_um_status_persiste_e_repete_sem_alteracao_sc002(self):
+        inicial = self.preparar_us2()
+        self.conferir_sucesso(self.executar_cli("concluir", "4"), "Tarefa 4 concluída.\n")
+        esperado = {
+            "schema_version": 1,
+            "tarefas": [
+                {**registro, "status": "concluida"} if registro["id"] == 4 else registro
+                for registro in inicial["tarefas"]
+            ],
+        }
+        self.assertEqual(json.loads(self.arquivo.read_text(encoding="utf-8")), esperado)
+        depois = self.arquivo.read_bytes()
+        linhas = "".join(
+            f'{registro["id"]} | '
+            f'{"concluída" if registro["status"] == "concluida" else "pendente"} | '
+            f'{json.dumps(registro["descricao"], ensure_ascii=False)}\n'
+            for registro in sorted(esperado["tarefas"], key=lambda registro: registro["id"])
+        )
+        self.conferir_sucesso(self.executar_cli("listar"), linhas)
+        self.conferir_sucesso(self.executar_cli("concluir", "4"), "Tarefa 4 já está concluída.\n")
+        self.assertEqual(self.arquivo.read_bytes(), depois)
+
+    def test_ja_concluida_preserva_bytes_da_fixture_sem_reeserializar_fr006(self):
+        inicial = self.preparar_us2()
+        antes = self.arquivo.read_bytes()
+        self.conferir_sucesso(self.executar_cli("concluir", "9"), "Tarefa 9 já está concluída.\n")
+        self.assertEqual(self.arquivo.read_bytes(), antes)
+        self.assertEqual(json.loads(antes), inicial)
+
+    def test_id_inexistente_nao_cria_ou_altera_dados_fr007_sc003(self):
+        resultado = self.executar_cli("concluir", "999")
+        self.assertEqual(resultado.returncode, 1)
+        self.assertEqual(resultado.stdout, "")
+        self.assertEqual(resultado.stderr, "Erro: tarefa 999 não encontrada.\n")
+        self.assertEqual(list(self.diretorio.iterdir()), [])
+        self.preparar_us2()
+        antes = self.arquivo.read_bytes()
+        for identificador in ("999", str(10**100)):
+            with self.subTest(identificador=identificador):
+                resultado = self.executar_cli("concluir", identificador)
+                self.assertEqual(resultado.returncode, 1)
+                self.assertEqual(resultado.stdout, "")
+                self.assertEqual(resultado.stderr, f"Erro: tarefa {identificador} não encontrada.\n")
+                self.assertEqual(self.arquivo.read_bytes(), antes)
+
+    def test_id_ausente_ou_invalido_nao_cria_ou_altera_dados_fr007(self):
+        casos = ([], ["abc"], ["1.5"], ["0"], ["-1"], ["01"])
+        for restante in casos[:3]:
+            with self.subTest(estado="ausente", restante=restante):
+                resultado = self.executar_cli("concluir", *restante)
+                self.assertEqual(resultado.returncode, 2)
+                self.assertEqual(resultado.stdout, "")
+                self.assertEqual(resultado.stderr, "Erro: informe um identificador inteiro positivo.\n")
+                self.assertEqual(list(self.diretorio.iterdir()), [])
+        self.preparar_us2()
+        antes = self.arquivo.read_bytes()
+        for restante in casos:
+            with self.subTest(estado="existente", restante=restante):
+                resultado = self.executar_cli("concluir", *restante)
+                self.assertEqual(resultado.returncode, 2)
+                self.assertEqual(resultado.stdout, "")
+                self.assertEqual(resultado.stderr, "Erro: informe um identificador inteiro positivo.\n")
+                self.assertEqual(self.arquivo.read_bytes(), antes)
 
     def test_us1_tres_adicoes_e_novo_id_entre_processos_sc001(self):
         self.conferir_sucesso(self.executar_cli("listar"), "Nenhuma tarefa cadastrada.\n")
@@ -110,7 +188,7 @@ class CliProcessoTests(unittest.TestCase):
     def test_dados_invalidos_nao_viram_vazio_nem_sao_substituidos_fr009(self):
         for conteudo in (b"", b"{invalido", b'{"schema_version":9,"tarefas":[]}'):
             self.arquivo.write_bytes(conteudo)
-            for argumentos in (("listar",), ("adicionar", "Tarefa fictícia")):
+            for argumentos in (("listar",), ("adicionar", "Tarefa fictícia"), ("concluir", "4")):
                 with self.subTest(conteudo=conteudo, argumentos=argumentos):
                     resultado = self.executar_cli(*argumentos)
                     self.assertEqual(resultado.returncode, 1)
@@ -121,7 +199,7 @@ class CliProcessoTests(unittest.TestCase):
 
     def test_destino_diretorio_informa_erro_sem_sucesso_fr009(self):
         self.arquivo.mkdir()
-        for argumentos in (("listar",), ("adicionar", "Tarefa fictícia")):
+        for argumentos in (("listar",), ("adicionar", "Tarefa fictícia"), ("concluir", "4")):
             with self.subTest(argumentos=argumentos):
                 resultado = self.executar_cli(*argumentos)
                 self.assertEqual(resultado.returncode, 1)
@@ -129,21 +207,28 @@ class CliProcessoTests(unittest.TestCase):
                 self.assertEqual(resultado.stderr, "Erro: não foi possível ler os dados locais.\n")
                 self.assertEqual(list(self.arquivo.iterdir()), [])
 
-    def test_falha_real_de_replace_traduzida_sem_sucesso_original_intacto_fr009(self):
+    def conferir_falha_replace(self, *argumentos):
         from tarefas.cli import main
 
-        original = b'{"schema_version":1,"tarefas":[]}\n '
-        self.arquivo.write_bytes(original)
+        original = self.arquivo.read_bytes()
         stdout, stderr = io.StringIO(), io.StringIO()
         with patch("tarefas.armazenamento.os.replace", side_effect=PermissionError("falha fictícia")), patch(
             "pathlib.Path.home", side_effect=AssertionError("consulta indevida ao default")
         ), redirect_stdout(stdout), redirect_stderr(stderr):
-            codigo = main(["--arquivo", str(self.arquivo), "adicionar", "Tarefa fictícia"])
+            codigo = main(["--arquivo", str(self.arquivo), *argumentos])
         self.assertEqual(codigo, 1)
         self.assertEqual(stdout.getvalue(), "")
         self.assertEqual(stderr.getvalue(), "Erro: não foi possível salvar os dados locais.\n")
         self.assertEqual(self.arquivo.read_bytes(), original)
         self.assertEqual(list(self.diretorio.iterdir()), [self.arquivo])
+
+    def test_falha_real_de_replace_traduzida_sem_sucesso_original_intacto_fr009(self):
+        self.arquivo.write_bytes(b'{"schema_version":1,"tarefas":[]}\n ')
+        self.conferir_falha_replace("adicionar", "Tarefa fictícia")
+
+    def test_falha_de_replace_ao_concluir_preserva_original_sem_sucesso_fr009(self):
+        self.preparar_us2()
+        self.conferir_falha_replace("concluir", "4")
 
     def test_ajuda_real_em_portugues_sem_criar_dados_fr001_fr012(self):
         resultado = self.executar(

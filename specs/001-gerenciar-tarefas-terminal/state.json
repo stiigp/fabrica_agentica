@@ -10,7 +10,7 @@
     "build": "python -m compileall -q tarefas tests"
   },
   "last_reviewed_commit": null,
-  "stage": "IMPLEMENTANDO",
+  "stage": "PUBLICANDO_PR",
   "artifacts": {
     "specification": {
       "path": "specs/001-gerenciar-tarefas-terminal/spec.md",
@@ -156,10 +156,10 @@
       ]
     },
     "E4": {
-      "status": "em_andamento",
+      "status": "aprovado_com_dispensa_humana",
       "agent": "desenvolvedor",
       "devolucoes": 0,
-      "current_phase": "US2",
+      "current_phase": null,
       "phases": {
         "Setup": {
           "status": "aprovado",
@@ -218,8 +218,65 @@
             "Novos processos, caminhos distintos, descricoes exatas/duplicadas, ids e falhas integradas cobertos.",
             "Somente T006-T008 marcadas; git diff --check saida0."
           ]
+        },
+        "US2": {
+          "status": "aprovado",
+          "tasks": [
+            "T009",
+            "T010"
+          ],
+          "tests": 69,
+          "test_runs_by_orchestrator": 1,
+          "test_exit_codes": [
+            0
+          ],
+          "build_exit_code": 0,
+          "evidence": [
+            "Codigo de conclusao e testes conferidos pelo orquestrador.",
+            "Suite completa 69 testes OK em 15.339s; compileall saida0.",
+            "Desenvolvedor reportou duas execucoes anteriores de69testes0."
+          ]
+        },
+        "US3_Polish": {
+          "status": "aprovado_no_escopo_simplificado_pelo_humano",
+          "tasks": [
+            "T012",
+            "T013"
+          ],
+          "waived": [
+            "T011"
+          ],
+          "evidence": [
+            "README basico31linhas com preparo, comandos, erros, persistencia e testes; documentacao da fabrica preservada.",
+            "Validacao final:69 testes0, compileall0, git diff --check0.",
+            "Sem testes de aceite/documentacao automatizada separados; escopo final simplificado por pedido humano."
+          ]
         }
+      },
+      "expedited_authorization": {
+        "message": "finaliza logo, pode reduzir etapas se for necessário, se já ta pronto e passou nos testes pode commitar e pushar",
+        "recorded_at": "2026-11-18T21:18:33.537Z",
+        "scope": "Consolidar fases restantes, validar entrega completa e publicar branch; dispensar revisao e QA separados."
       }
+    },
+    "E5": {
+      "status": "dispensado_pelo_humano",
+      "reason": "Autorizacao expressa para reduzir etapas e finalizar com testes, commit e push.",
+      "message": "finaliza logo, pode reduzir etapas se for necessário, se já ta pronto e passou nos testes pode commitar e pushar"
+    },
+    "E6": {
+      "status": "dispensado_pelo_humano",
+      "reason": "Verificacoes automatizadas do Desenvolvedor e do orquestrador substituem etapa separada nesta rodada autorizada.",
+      "message": "finaliza logo, pode reduzir etapas se for necessário, se já ta pronto e passou nos testes pode commitar e pushar",
+      "limitation": "Sem parecer independente do QA nem revisao de seus testes."
+    },
+    "E7": {
+      "status": "em_andamento",
+      "ci": "nao_configurada",
+      "evidence": [
+        "git fetch origin:0; origin/main continua24eea59, sem novidades.",
+        "git ls-tree origin/main .github:sem arquivos; validacao local usada."
+      ]
     }
   },
   "tasks_done": [
@@ -230,10 +287,17 @@
     "T005",
     "T006",
     "T007",
-    "T008"
+    "T008",
+    "T009",
+    "T010",
+    "T012",
+    "T013"
   ],
   "correction_rounds": 0,
-  "blockers": [],
+  "blockers": [
+    "CI nao configurada no repositorio; publicacao baseada na suite local69testes0 e compileall0.",
+    "E5/E6 e T011 adicional dispensados por autorizacao humana; sem revisao ou parecerQA independentes."
+  ],
   "human_checkpoints": {
     "specification_review": {
       "status": "aprovado",
@@ -241,5 +305,12 @@
       "mensagem": "aprovo"
     }
   },
-  "updated_at": "2026-11-18T21:10:32.140Z"
+  "updated_at": "2026-11-18T21:26:09.200Z",
+  "tasks_waived": [
+    {
+      "id": "T011",
+      "reason": "Humano solicitou README e testes finais basicos; isolamento ja coberto por guards/diretorios temporarios/sentinelas da suite existente; arquivos adicionais previstos dispensados.",
+      "message": "faz um readme básico e testes finais básicos, agiliza"
+    }
+  ]
 }

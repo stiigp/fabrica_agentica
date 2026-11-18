@@ -174,3 +174,34 @@ Se o cliente não disponibilizar os agentes personalizados ou as skills, atualiz
 - [Regras nativas de comandos e verificador execpolicy](https://learn.chatgpt.com/docs/agent-configuration/rules)
 - [Integração oficial do Spec Kit com Codex](https://github.com/github/spec-kit/blob/main/docs/integrations/codex.md)
 - [Instalação do Spec Kit](https://github.com/github/spec-kit/blob/main/docs/installation.md)
+
+## Aplicação de tarefas pelo terminal
+
+Pré-requisitos: Python 3.10 ou superior e PowerShell com terminal UTF-8. Execute os comandos na raiz deste repositório; não é necessário instalar dependências.
+
+```powershell
+python --version
+$diretorioDemo = Join-Path ([System.IO.Path]::GetTempPath()) ("tarefas-demo-" + [guid]::NewGuid().ToString("N"))
+$arquivo = Join-Path $diretorioDemo "tarefas.json"
+python -m tarefas --arquivo "$arquivo" listar
+python -m tarefas --arquivo "$arquivo" adicionar "Preparar relatório"
+python -m tarefas --arquivo "$arquivo" listar
+python -m tarefas --arquivo "$arquivo" concluir 1
+python -m tarefas --arquivo "$arquivo" concluir 1
+python -m tarefas --arquivo "$arquivo" adicionar "   "
+python -m tarefas --arquivo "$arquivo" concluir 999
+python -m tarefas --help
+```
+
+A listagem inicial informa `Nenhuma tarefa cadastrada.`; adicionar confirma `Tarefa 1 adicionada.`. A listagem seguinte mostra `1 | pendente | "Preparar relatório"`. Concluir confirma `Tarefa 1 concluída.`; repetir informa `Tarefa 1 já está concluída.`. Essas operações e a ajuda retornam código 0. A descrição em branco gera `Erro: a descrição é obrigatória.`, código 2; o ID inexistente gera `Erro: tarefa 999 não encontrada.`, código 1. Erros são enviados a stderr, sem confirmação de sucesso. Consulte `$LASTEXITCODE` imediatamente após cada comando.
+
+O JSON preserva as tarefas entre execuções usando o mesmo arquivo. O parâmetro `--arquivo` seleciona dados independentes; sem ele, os dados ficam em `.tarefas/tarefas.json` no diretório pessoal. Use o caminho temporário acima para demonstrações. Listar um arquivo ausente não o cria; falhas de leitura ou gravação são informadas sem substituir dados por uma lista vazia.
+
+Para verificar a aplicação:
+
+```powershell
+python -m unittest discover -s tests -t . -v
+python -m compileall -q tarefas tests
+```
+
+A suíte deve informar uma quantidade positiva de testes e terminar `OK`, código 0. Os testes usam dados fictícios em diretórios temporários, caminhos explícitos e home fictício; execuções consecutivas não dependem de resíduos nem acessam tarefas reais. Compileall deve retornar 0, normalmente sem saída. Lint e typecheck não são aplicáveis: não há ferramentas configuradas para essa CLI sem dependências externas. Mais exemplos e resultados estão no [guia de execução](specs/001-gerenciar-tarefas-terminal/quickstart.md).

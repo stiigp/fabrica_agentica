@@ -88,7 +88,7 @@ class CliOperacoesTests(unittest.TestCase):
 
     def test_falha_de_leitura_sem_escrita_ou_sucesso_fr009(self):
         self.carregar.side_effect = ErroLeitura("falha fictícia")
-        for argumentos in (("listar",), ("adicionar", "Tarefa fictícia")):
+        for argumentos in (("listar",), ("adicionar", "Tarefa fictícia"), ("concluir", "2")):
             with self.subTest(argumentos=argumentos):
                 self.assertEqual(self.executar(*argumentos), 1)
                 self.assertEqual(self.stdout.getvalue(), "")
@@ -98,9 +98,47 @@ class CliOperacoesTests(unittest.TestCase):
     def test_falha_de_gravacao_sem_confirmacao_ou_mutacao_fr009(self):
         antes = list(self.tarefas)
         self.salvar.side_effect = ErroGravacao("falha fictícia")
-        self.assertEqual(self.executar("adicionar", "Tarefa fictícia"), 1)
+        for argumentos in (("adicionar", "Tarefa fictícia"), ("concluir", "2")):
+            with self.subTest(argumentos=argumentos):
+                self.assertEqual(self.executar(*argumentos), 1)
+                self.assertEqual(self.stdout.getvalue(), "")
+                self.assertEqual(self.stderr.getvalue(), "Erro: não foi possível salvar os dados locais.\n")
+                self.assertEqual(self.tarefas, antes)
+
+    def test_concluir_confirma_somente_apos_salvar_sem_mutar_original_fr006_fr008(self):
+        antes = list(self.tarefas)
+        esperado = [antes[0], Tarefa(2, antes[1].descricao, "concluida"), antes[2]]
+
+        def salvar(caminho, novas):
+            self.assertEqual(self.stdout.getvalue(), "")
+            self.assertEqual(self.stderr.getvalue(), "")
+            self.assertEqual(caminho, self.arquivo)
+            self.assertEqual(novas, esperado)
+            self.assertIsNot(novas, self.tarefas)
+            self.assertEqual(self.tarefas, antes)
+
+        self.salvar.side_effect = salvar
+        self.assertEqual(self.executar("concluir", "2"), 0)
+        self.assertEqual(self.stdout.getvalue(), "Tarefa 2 concluída.\n")
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.salvar.assert_called_once_with(self.arquivo, esperado)
+        self.assertEqual(self.tarefas, antes)
+
+    def test_conclusao_repetida_sem_escrita_ou_reeserializacao_fr006(self):
+        antes = list(self.tarefas)
+        with patch("tarefas.cli.json.dumps", side_effect=AssertionError("reeserialização indevida")):
+            self.assertEqual(self.executar("concluir", "8"), 0)
+        self.assertEqual(self.stdout.getvalue(), "Tarefa 8 já está concluída.\n")
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.salvar.assert_not_called()
+        self.assertEqual(self.tarefas, antes)
+
+    def test_id_inexistente_sem_escrita_ou_sucesso_fr007(self):
+        antes = list(self.tarefas)
+        self.assertEqual(self.executar("concluir", "999"), 1)
         self.assertEqual(self.stdout.getvalue(), "")
-        self.assertEqual(self.stderr.getvalue(), "Erro: não foi possível salvar os dados locais.\n")
+        self.assertEqual(self.stderr.getvalue(), "Erro: tarefa 999 não encontrada.\n")
+        self.salvar.assert_not_called()
         self.assertEqual(self.tarefas, antes)
 
 
