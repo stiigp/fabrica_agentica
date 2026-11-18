@@ -3,11 +3,105 @@
 from contextlib import ExitStack, redirect_stderr, redirect_stdout
 import importlib
 import io
+import json
 from pathlib import Path
 import runpy
 import tempfile
 import unittest
 from unittest.mock import patch
+
+from tarefas.armazenamento import ErroGravacao, ErroLeitura
+from tarefas.modelo import Tarefa
+
+
+class CliOperacoesTests(unittest.TestCase):
+    def setUp(self):
+        temporario = tempfile.TemporaryDirectory()
+        self.addCleanup(temporario.cleanup)
+        self.arquivo = Path(temporario.name) / "dados-ficticios.json"
+        self.cli = importlib.import_module("tarefas.cli")
+        self.tarefas = [
+            Tarefa(8, '  Revisar relatório | "A"\nB\t  ', "concluida"),
+            Tarefa(2, "Repetida"), Tarefa(5, "Repetida"),
+        ]
+        guards = ExitStack()
+        self.addCleanup(guards.close)
+        self.carregar = guards.enter_context(patch.object(self.cli, "carregar", return_value=self.tarefas))
+        self.salvar = guards.enter_context(patch.object(self.cli, "salvar"))
+        for alvo in (
+            "builtins.open", "io.open", "os.open", "os.mkdir", "os.makedirs",
+            "os.replace", "pathlib.Path.home", "pathlib.Path.expanduser",
+        ):
+            guards.enter_context(patch(alvo, side_effect=AssertionError(f"I/O indevido: {alvo}")))
+        self.stdout, self.stderr = io.StringIO(), io.StringIO()
+
+    def executar(self, *argumentos):
+        self.stdout.seek(0)
+        self.stdout.truncate()
+        self.stderr.seek(0)
+        self.stderr.truncate()
+        with redirect_stdout(self.stdout), redirect_stderr(self.stderr):
+            return self.cli.main(["--arquivo", str(self.arquivo), *argumentos])
+
+    def test_listar_vazio_sem_escrita_fr005(self):
+        self.carregar.return_value = []
+        self.assertEqual(self.executar("listar"), 0)
+        self.assertEqual(self.stdout.getvalue(), "Nenhuma tarefa cadastrada.\n")
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.carregar.assert_called_once_with(self.arquivo)
+        self.salvar.assert_not_called()
+
+    def test_listar_ordenado_todos_campos_escape_reversivel_sem_mutacao_fr005(self):
+        antes = list(self.tarefas)
+        self.assertEqual(self.executar("listar"), 0)
+        linhas = self.stdout.getvalue().splitlines()
+        self.assertEqual(len(linhas), 3)
+        self.assertEqual([linha.split(" | ", 2)[0] for linha in linhas], ["2", "5", "8"])
+        for tarefa, linha in zip(sorted(antes, key=lambda tarefa: tarefa.id), linhas):
+            identificador, status, descricao = linha.split(" | ", 2)
+            self.assertEqual(int(identificador), tarefa.id)
+            self.assertEqual(status, "concluída" if tarefa.status == "concluida" else "pendente")
+            self.assertEqual(json.loads(descricao), tarefa.descricao)
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.assertEqual(self.tarefas, antes)
+        self.carregar.assert_called_once_with(self.arquivo)
+        self.salvar.assert_not_called()
+
+    def test_adicionar_confirma_somente_apos_salvar_nova_colecao_fr008(self):
+        antes = list(self.tarefas)
+        descricao = '  Seção técnica | "A"\nB\t\x00  '
+
+        def salvar(caminho, novas):
+            self.assertEqual(self.stdout.getvalue(), "")
+            self.assertEqual(self.stderr.getvalue(), "")
+            self.assertEqual(caminho, self.arquivo)
+            self.assertEqual(novas, [*antes, Tarefa(9, descricao)])
+            self.assertIsNot(novas, self.tarefas)
+            self.assertEqual(self.tarefas, antes)
+
+        self.salvar.side_effect = salvar
+        self.assertEqual(self.executar("adicionar", descricao), 0)
+        self.assertEqual(self.stdout.getvalue(), "Tarefa 9 adicionada.\n")
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.salvar.assert_called_once()
+        self.assertEqual(self.tarefas, antes)
+
+    def test_falha_de_leitura_sem_escrita_ou_sucesso_fr009(self):
+        self.carregar.side_effect = ErroLeitura("falha fictícia")
+        for argumentos in (("listar",), ("adicionar", "Tarefa fictícia")):
+            with self.subTest(argumentos=argumentos):
+                self.assertEqual(self.executar(*argumentos), 1)
+                self.assertEqual(self.stdout.getvalue(), "")
+                self.assertEqual(self.stderr.getvalue(), "Erro: não foi possível ler os dados locais.\n")
+                self.salvar.assert_not_called()
+
+    def test_falha_de_gravacao_sem_confirmacao_ou_mutacao_fr009(self):
+        antes = list(self.tarefas)
+        self.salvar.side_effect = ErroGravacao("falha fictícia")
+        self.assertEqual(self.executar("adicionar", "Tarefa fictícia"), 1)
+        self.assertEqual(self.stdout.getvalue(), "")
+        self.assertEqual(self.stderr.getvalue(), "Erro: não foi possível salvar os dados locais.\n")
+        self.assertEqual(self.tarefas, antes)
 
 
 class CliSetupTests(unittest.TestCase):

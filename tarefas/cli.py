@@ -1,11 +1,14 @@
 """Argumentos, ajuda e ponto de entrada da interface de terminal."""
 
 import argparse
+import json
 from pathlib import Path
 import re
 import sys
 
 from .modelo import ErroValidacao, validar_descricao
+from .armazenamento import ErroGravacao, ErroLeitura, carregar, salvar
+from .servico import adicionar
 
 
 class _Parser(argparse.ArgumentParser):
@@ -34,7 +37,7 @@ def _criar_parser():
         add_help=False,
         allow_abbrev=False,
         description="Gerenciar tarefas pelo terminal.",
-        epilog="As operações de tarefas serão disponibilizadas nas próximas etapas.",
+        epilog="Adicionar e listar disponíveis; concluir será disponibilizado na próxima etapa.",
     )
     _opcoes(parser).add_argument(
         "--arquivo", metavar="CAMINHO", help="selecionar o arquivo de dados locais"
@@ -90,10 +93,28 @@ def main(argv=None) -> int:
     except ErroValidacao as erro:
         print(f"Erro: {erro}", file=sys.stderr)
         return 2
+    if argumentos.comando == "concluir":
+        print("Erro: operação ainda não disponível.", file=sys.stderr)
+        return 1
     try:
-        _resolver_caminho(argumentos.arquivo)
-    except (OSError, RuntimeError):
+        caminho = _resolver_caminho(argumentos.arquivo)
+        tarefas = carregar(caminho)
+    except (OSError, RuntimeError, ErroLeitura):
         print("Erro: não foi possível ler os dados locais.", file=sys.stderr)
         return 1
-    print("Erro: operação ainda não disponível.", file=sys.stderr)
-    return 1
+    if argumentos.comando == "listar":
+        if not tarefas:
+            print("Nenhuma tarefa cadastrada.")
+        for tarefa in sorted(tarefas, key=lambda tarefa: tarefa.id):
+            status = "concluída" if tarefa.status == "concluida" else "pendente"
+            descricao = json.dumps(tarefa.descricao, ensure_ascii=False)
+            print(f"{tarefa.id} | {status} | {descricao}")
+        return 0
+    novas, tarefa = adicionar(tarefas, argumentos.descricao)
+    try:
+        salvar(caminho, novas)
+    except ErroGravacao:
+        print("Erro: não foi possível salvar os dados locais.", file=sys.stderr)
+        return 1
+    print(f"Tarefa {tarefa.id} adicionada.")
+    return 0

@@ -159,7 +159,7 @@
       "status": "em_andamento",
       "agent": "desenvolvedor",
       "devolucoes": 0,
-      "current_phase": "US1",
+      "current_phase": "US2",
       "phases": {
         "Setup": {
           "status": "aprovado",
@@ -198,6 +198,26 @@
             "JSON invalido, campos/tipos/IDs, falhas deterministicas e preservacao do original cobertos.",
             "Regressao Windows ancestral arquivo coberta; somente tarefas da fase marcadas."
           ]
+        },
+        "US1": {
+          "status": "aprovado",
+          "tasks": [
+            "T006",
+            "T007",
+            "T008"
+          ],
+          "tests": 58,
+          "test_runs": 2,
+          "test_exit_codes": [
+            0,
+            0
+          ],
+          "build_exit_code": 0,
+          "evidence": [
+            "Servico puro e composicao CLI conferidos no disco.",
+            "Novos processos, caminhos distintos, descricoes exatas/duplicadas, ids e falhas integradas cobertos.",
+            "Somente T006-T008 marcadas; git diff --check saida0."
+          ]
         }
       }
     }
@@ -207,7 +227,10 @@
     "T002",
     "T003",
     "T004",
-    "T005"
+    "T005",
+    "T006",
+    "T007",
+    "T008"
   ],
   "correction_rounds": 0,
   "blockers": [],
@@ -218,5 +241,5 @@
       "mensagem": "aprovo"
     }
   },
-  "updated_at": "2026-11-18T21:00:18.397Z"
+  "updated_at": "2026-11-18T21:10:32.140Z"
 }
