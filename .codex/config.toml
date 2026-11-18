@@ -1,0 +1,4 @@
+# Padrões persistentes para sessões iniciadas neste projeto confiável.
+# Opções da sessão e políticas superiores do ambiente podem prevalecer.
+sandbox_mode = "workspace-write"
+approval_policy = "on-request"

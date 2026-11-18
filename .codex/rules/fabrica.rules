@@ -1,0 +1,78 @@
+# Regras nativas de comandos da fábrica, compartilhadas por todos os papéis.
+# Carregadas ao iniciar o Codex em um projeto confiável.
+# São padrões por prefixo de argumentos, não uma ACL de Git nem um parser de
+# qualquer script. Não convertem automaticamente .codex/permissoes.yaml.
+# Não há allow amplo: comandos restantes seguem a sandbox/aprovação da sessão.
+
+GIT = [
+    "git",
+    "git.exe",
+    "C:\\Program Files\\Git\\cmd\\git.exe",
+    "C:\\Program Files\\Git\\bin\\git.exe",
+    "C:/Program Files/Git/cmd/git.exe",
+    "C:/Program Files/Git/bin/git.exe",
+]
+
+GH = [
+    "gh",
+    "gh.exe",
+    "C:\\Program Files\\GitHub CLI\\gh.exe",
+    "C:/Program Files/GitHub CLI/gh.exe",
+]
+
+FORCE_PUSH_OPTIONS = ["--force", "-f", "--force-with-lease", "--mirror"]
+
+prefix_rule(
+    pattern = [GH, "pr", "merge"],
+    decision = "forbidden",
+    justification = "O merge e o auto-merge do PR pertencem ao humano; apresente o PR no Checkpoint 2.",
+    match = ["gh pr merge 1", "gh pr merge 1 --auto", "gh.exe pr merge 1 --squash"],
+    not_match = ["gh pr create", "gh pr view 1", "gh pr checks 1"],
+)
+
+prefix_rule(
+    pattern = [GIT, "rebase"],
+    decision = "forbidden",
+    justification = "A fábrica não faz rebase; o orquestrador sincroniza a base para a branch da feature com git merge.",
+    match = ["git rebase main", "git.exe rebase --interactive HEAD~2"],
+    not_match = ["git merge origin/main", "git status"],
+)
+
+prefix_rule(
+    pattern = [GIT, "reset", "--hard"],
+    decision = "forbidden",
+    justification = "Reset destrutivo é proibido; preserve as alterações e reporte o impedimento.",
+    match = ["git reset --hard", "git.exe reset --hard HEAD~1"],
+    not_match = ["git reset --soft HEAD~1", "git restore --staged arquivo.txt"],
+)
+
+prefix_rule(
+    pattern = [GIT, "reset", ["--quiet", "-q"], "--hard"],
+    decision = "forbidden",
+    justification = "Reset destrutivo continua proibido com a opção de saída silenciosa.",
+    match = ["git reset --quiet --hard HEAD", "git reset -q --hard"],
+)
+
+prefix_rule(
+    pattern = [GIT, "push", FORCE_PUSH_OPTIONS],
+    decision = "forbidden",
+    justification = "Force push e push espelhado são proibidos; faça push normal da branch da feature.",
+    match = ["git push --force origin feature", "git push -f origin feature", "git push --force-with-lease origin feature", "git push --mirror origin"],
+    not_match = ["git push -u origin feature", "git push origin feature"],
+)
+
+prefix_rule(
+    pattern = [GIT, "push", "origin", FORCE_PUSH_OPTIONS],
+    decision = "forbidden",
+    justification = "Force push para origin é proibido; faça push normal da branch da feature.",
+    match = ["git push origin --force feature", "git.exe push origin -f feature", "git push origin --force-with-lease feature"],
+    not_match = ["git push origin feature"],
+)
+
+prefix_rule(
+    pattern = [GIT, "push", "origin", "HEAD", FORCE_PUSH_OPTIONS],
+    decision = "forbidden",
+    justification = "Publicar HEAD com force push é proibido; faça push normal da branch da feature.",
+    match = ["git push origin HEAD --force", "git push origin HEAD -f", "git push origin HEAD --force-with-lease"],
+    not_match = ["git push origin HEAD"],
+)

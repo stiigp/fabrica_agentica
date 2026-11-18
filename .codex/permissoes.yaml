@@ -1,0 +1,298 @@
+# Política declarativa da fábrica. O Codex NÃO carrega este arquivo como ACL.
+# O AGENTS.md e os agentes mandam ler e seguir esta política no prompt.
+# Sandbox e aprovações reais são definidos na sessão/ambiente do Codex.
+schema_version: 1
+enforcement: instructions
+scope: fluxo_da_fabrica
+
+semantics:
+  decisions:
+    allow: permitido dentro do escopo da etapa e das permissões reais da sessão
+    deny: proibido para este papel durante o fluxo
+    require_checkpoint_1: exige aprovação humana explícita da especificação vigente
+  precedence:
+    - restrições reais do ambiente e instruções superiores
+    - proibições globais da fábrica
+    - limites e proibições do papel
+    - permissões do papel
+  paths: relativos à raiz do projeto; usar a feature e os diretórios informados no handoff
+  globs: "* cobre um segmento; ** cobre subdiretórios; não é uma ACL do sistema operacional"
+  shell: as ações Git/GitHub abaixo valem também para aliases, executáveis com caminho completo e scripts que as executem
+  writes: limites valem para edição, geração, exclusão, renomeação e escrita indireta por ferramentas ou scripts
+  test_outputs: caches, cobertura e saídas locais de teste/build são permitidos nos locais previstos no plano; não são autorização para editar fontes de outro papel
+  skill_side_effects: uma skill não pode ampliar o papel; hooks Git da skill devem ficar desabilitados para subagentes
+
+global:
+  read_project: allow
+  merge_pr_into_base: deny
+  enable_auto_merge: deny
+  force_push: deny
+  rebase: deny
+  reset_hard: deny
+  deploy: deny
+  commit_real_secrets: deny
+  production_database_changes: deny
+  edit_spec_manually: deny
+  discard_unrelated_user_changes: deny
+  edit_factory_configuration_during_feature: deny
+  edit_state_json: somente_orquestrador
+  specification_changes: somente_analista_via_speckit_clarify_e_nova_aprovacao
+  base_branch: não editar, commitar ou publicar diretamente na branch base
+  protected_configuration:
+    - .codex/**
+    - .agents/**
+    - .specify/scripts/**
+    - .specify/templates/**
+    - .specify/memory/constitution.md
+  note: a proibição de editar a configuração durante uma feature não impede pedidos explícitos do humano para adaptar a própria fábrica
+
+checkpoints:
+  specification_review:
+    decision: require_checkpoint_1
+    evidence: mensagem literal do humano posterior à apresentação da spec vigente
+    state: human_checkpoints.specification_review
+    on_spec_change: invalidar aprovação e apresentar novamente
+    architect_dispatch: a aprovação registrada libera o Arquiteto; não há ask nativo por agente nem nova pergunta a cada chamada
+  merge_approval:
+    actor: humano
+    agent_action: consultar gh pr view; registrar ENTREGUE apenas se state for MERGED
+
+roles:
+  orquestrador:
+    execution: chat_principal
+    instructions: .codex/agents/orquestrador.md
+    delegation:
+      default: deny
+      analista_requisitos: allow
+      arquiteto: require_checkpoint_1
+      criador_tarefas: allow
+      desenvolvedor: allow
+      revisor_codigo: allow
+      qa: allow
+      max_active_subagents: 1
+    edit:
+      default: deny
+      allow:
+        - specs/*/state.json
+        - specs/*/notes/**
+      note: o diretório da feature deve ser criado pelo Spec Kit antes do state.json
+    shell:
+      inspect_project_and_git: allow
+      execute_verification_commands: allow
+      create_feature_branch: allow
+      switch_existing_feature_branch: allow
+      stage_feature_changes: allow
+      unstage_secrets: allow
+      commit_feature_changes: allow
+      fetch_origin: allow
+      merge_base_into_feature: allow
+      push_feature_branch: allow
+      github_auth_status: allow
+      github_create_or_update_feature_pr: allow
+      github_read_pr_and_checks: allow
+      github_merge_pr: deny
+      note: stage/commit limitam-se aos arquivos da feature; merge da base na feature é diferente de merge do PR
+
+  analista_requisitos:
+    execution: subagent
+    instructions: .codex/agents/analista-requisitos.toml
+    native_registration: .codex/agents/analista-requisitos.toml
+    delegation: deny
+    skills:
+      - speckit-specify
+      - speckit-clarify
+      - speckit-checklist
+    edit:
+      default: deny
+      allow:
+        - specs/*/spec.md
+        - specs/*/checklists/**
+        - specs/*/notes/**
+      skill_only:
+        - .specify/feature.json
+      note: criar spec só via specify; alterar spec existente só via clarify; feature.json só como saída da skill
+    shell:
+      inspect_project_and_git: allow
+      run_assigned_speckit_scripts: allow
+      switch_existing_feature_branch: allow
+      create_branch: deny
+      stage_or_commit: deny
+      push: deny
+      merge: deny
+      rebase: deny
+      reset: deny
+      stash: deny
+      github_cli: deny
+      note: no primeiro specify a branch ainda não existe; não troque de branch nem execute hooks Git
+
+  arquiteto:
+    execution: subagent
+    instructions: .codex/agents/arquiteto.toml
+    native_registration: .codex/agents/arquiteto.toml
+    delegation: deny
+    entry: require_checkpoint_1
+    skills:
+      - speckit-plan
+    edit:
+      default: deny
+      allow:
+        - specs/*/plan.md
+        - specs/*/research.md
+        - specs/*/data-model.md
+        - specs/*/contracts/**
+        - specs/*/quickstart.md
+        - specs/*/notes/**
+      skill_only:
+        - AGENTS.md
+      note: atualizar AGENTS.md somente se a skill instalada fornecer e exigir esse procedimento; preservar as instruções da fábrica; a versão 1.4.2 não exige update-agent-context
+    shell:
+      inspect_project_and_git: allow
+      run_assigned_speckit_scripts: allow
+      switch_existing_feature_branch: allow
+      create_branch: deny
+      stage_or_commit: deny
+      push: deny
+      merge: deny
+      rebase: deny
+      reset: deny
+      stash: deny
+      github_cli: deny
+
+  criador_tarefas:
+    execution: subagent
+    instructions: .codex/agents/criador-tarefas.toml
+    native_registration: .codex/agents/criador-tarefas.toml
+    delegation: deny
+    skills:
+      - speckit-tasks
+    edit:
+      default: deny
+      allow:
+        - specs/*/tasks.md
+        - specs/*/notes/**
+    shell:
+      inspect_project_and_git: allow
+      run_assigned_speckit_scripts: allow
+      switch_existing_feature_branch: allow
+      create_branch: deny
+      stage_or_commit: deny
+      push: deny
+      merge: deny
+      rebase: deny
+      reset: deny
+      stash: deny
+      github_cli: deny
+
+  desenvolvedor:
+    execution: subagent
+    instructions: .codex/agents/desenvolvedor.toml
+    native_registration: .codex/agents/desenvolvedor.toml
+    delegation: deny
+    skills:
+      - speckit-implement
+    edit:
+      default: deny
+      allow_from_plan:
+        - código e configuração do produto necessários às tarefas delegadas
+        - testes unitários e de integração do Desenvolvedor
+        - documentação do produto e arquivos de ignore necessários
+      allow:
+        - specs/*/notes/**
+      restricted:
+        specs/*/tasks.md: somente marcações de conclusão das tarefas da fase delegada
+      deny:
+        - specs/*/state.json
+        - specs/*/spec.md
+        - specs/*/plan.md
+        - specs/*/research.md
+        - specs/*/data-model.md
+        - specs/*/contracts/**
+        - specs/*/quickstart.md
+        - specs/*/checklists/**
+        - specs/*/review-report.md
+        - specs/*/qa-report.md
+        - AGENTS.md
+      deny_from_plan:
+        - testes criados ou mantidos pelo QA
+    shell:
+      inspect_project_and_git: allow
+      run_assigned_speckit_scripts: allow
+      switch_existing_feature_branch: allow
+      execute_test_lint_build: allow
+      install_planned_dependencies: allow
+      install_other_dependencies: justificar_no_retorno_e_submeter_a_revisao
+      local_or_test_database_migrations: allow
+      resolve_conflict_files: allow
+      create_branch: deny
+      stage_or_commit: deny
+      push: deny
+      merge: deny
+      rebase: deny
+      reset: deny
+      stash: deny
+      github_cli: deny
+
+  revisor_codigo:
+    execution: subagent
+    instructions: .codex/agents/revisor-codigo.toml
+    native_registration: .codex/agents/revisor-codigo.toml
+    delegation: deny
+    skills: []
+    edit:
+      default: deny
+      allow:
+        - specs/*/review-report.md
+        - specs/*/notes/**
+    shell:
+      inspect_project_and_git: allow
+      switch_existing_feature_branch: allow
+      execute_verification_commands: allow
+      create_branch: deny
+      stage_or_commit: deny
+      push: deny
+      merge: deny
+      rebase: deny
+      reset: deny
+      stash: deny
+      github_cli: deny
+
+  qa:
+    execution: subagent
+    instructions: .codex/agents/qa.toml
+    native_registration: .codex/agents/qa.toml
+    delegation: deny
+    skills: []
+    edit:
+      default: deny
+      allow:
+        - specs/*/qa-report.md
+        - specs/*/notes/**
+      allow_from_plan:
+        - arquivos de teste de aceite e suas fixtures nos diretórios definidos no plan.md
+        - testes unitários adicionais apenas para casos de borda sem cobertura
+      deny:
+        - código e configuração de produção
+        - AGENTS.md
+        - specs/*/state.json
+        - specs/*/spec.md
+        - specs/*/plan.md
+        - specs/*/research.md
+        - specs/*/data-model.md
+        - specs/*/contracts/**
+        - specs/*/quickstart.md
+        - specs/*/tasks.md
+        - specs/*/checklists/**
+        - specs/*/review-report.md
+    shell:
+      inspect_project_and_git: allow
+      switch_existing_feature_branch: allow
+      execute_existing_suite_and_acceptance_tests: allow
+      local_test_environment: allow
+      create_branch: deny
+      stage_or_commit: deny
+      push: deny
+      merge: deny
+      rebase: deny
+      reset: deny
+      stash: deny
+      github_cli: deny
