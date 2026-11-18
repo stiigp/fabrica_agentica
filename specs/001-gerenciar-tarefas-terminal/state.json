@@ -159,11 +159,33 @@
       "status": "em_andamento",
       "agent": "desenvolvedor",
       "devolucoes": 0,
-      "current_phase": "Setup",
-      "phases": {}
+      "current_phase": "Foundational",
+      "phases": {
+        "Setup": {
+          "status": "aprovado",
+          "tasks": [
+            "T001",
+            "T002"
+          ],
+          "tests": 7,
+          "test_runs": 2,
+          "test_exit_codes": [
+            0,
+            0
+          ],
+          "build_exit_code": 0,
+          "evidence": [
+            "Arquivos lidos pelo orquestrador; somente marcacoes T001/T002 alteradas.",
+            "git diff --check saida0; raiz somente arquivos previstos."
+          ]
+        }
+      }
     }
   },
-  "tasks_done": [],
+  "tasks_done": [
+    "T001",
+    "T002"
+  ],
   "correction_rounds": 0,
   "blockers": [],
   "human_checkpoints": {
@@ -173,5 +195,5 @@
       "mensagem": "aprovo"
     }
   },
-  "updated_at": "2026-11-18T20:35:15.396Z"
+  "updated_at": "2026-11-18T20:46:06.686Z"
 }

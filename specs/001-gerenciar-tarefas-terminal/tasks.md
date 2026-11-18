@@ -28,8 +28,8 @@ Pacote `tarefas/` na raiz, sem instalação ou dependências externas; execuçã
 
 **Purpose**: inicializar o pacote e entregar uma primeira fronteira CLI verificável, sem acesso a dados.
 
-- [ ] T001 Criar `tarefas/__init__.py`, `tests/__init__.py`, `tests/unit/__init__.py`, `tests/integration/__init__.py` e `.gitignore` de produto para os caches/ambientes previstos em `plan.md`, sem dependências ou mudanças na fábrica (necessidade técnica: Project Structure e descoberta Python 3.10 do plano).
-- [ ] T002 Implementar entrada `tarefas/__main__.py` e `main(argv=None)` inicial em `tarefas/cli.py` com ajuda em português, código de saída propagado e importação/ajuda sem I/O de tarefas; incluir verificações significativas in-process e subprocesso em `tests/unit/test_cli.py` e `tests/integration/test_cli.py`, com guards que falhem se importação ou ajuda abrir/criar dados ou consultar home (FR-001, FR-010, FR-011, FR-012; `contracts/cli.md`). Depende de T001; não usar testes vazios de importação.
+- [X] T001 Criar `tarefas/__init__.py`, `tests/__init__.py`, `tests/unit/__init__.py`, `tests/integration/__init__.py` e `.gitignore` de produto para os caches/ambientes previstos em `plan.md`, sem dependências ou mudanças na fábrica (necessidade técnica: Project Structure e descoberta Python 3.10 do plano).
+- [X] T002 Implementar entrada `tarefas/__main__.py` e `main(argv=None)` inicial em `tarefas/cli.py` com ajuda em português, código de saída propagado e importação/ajuda sem I/O de tarefas; incluir verificações significativas in-process e subprocesso em `tests/unit/test_cli.py` e `tests/integration/test_cli.py`, com guards que falhem se importação ou ajuda abrir/criar dados ou consultar home (FR-001, FR-010, FR-011, FR-012; `contracts/cli.md`). Depende de T001; não usar testes vazios de importação.
 
 **Checkpoint**: ajuda executável e suíte positiva comprovam contrato inicial e ausência de I/O; comandos de negócio serão entregues nas fases seguintes.
 
