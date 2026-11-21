@@ -39,10 +39,10 @@
       "channel_id": null,
       "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
       "transport": "slack_bot_api",
-      "erro": "Nova tentativa autorizada apos reinstalacao: not_in_channel; adicionar bot ao canal configurado. Saida 1.",
+      "erro": "Terceira retomada expressamente autorizada: Slack retornou novamente not_in_channel; saida 1. Sem reenvio Discord.",
       "notificado_em": null,
       "artefato": "specs/002-resumo-tarefas-cli/spec.md",
-      "tentativas_retomada": 2,
+      "tentativas_retomada": 3,
       "etapa": "E1",
       "message_id": null
     },
@@ -100,13 +100,13 @@
       "status": "bloqueado",
       "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
       "resume_stage": "E2",
-      "human_retry_authorization": "concedi a opção e reinstalei. pode tentar de novo aí e se der ruim pode parar"
+      "human_retry_authorization": "estranho pois aqui o bot parece estar no canal, tenta novamente"
     }
   },
   "tasks_done": [],
   "correction_rounds": 0,
   "blockers": [
-    "Slack E1: not_in_channel. Bot precisa ser adicionado ao canal configurado. Nova tentativa autorizada executada uma vez; fluxo interrompido conforme pedido humano. Spec aprovada; Discord confirmado, sem reenvio; E2 nao iniciada."
+    "Slack E1 permanece not_in_channel apos nova tentativa humana autorizada. Confirmar se o bot associado ao token pertence ao canal configurado em SLACK_CHANNEL_ID. Spec aprovada; E2 nao iniciada; Discord confirmado."
   ],
   "human_checkpoints": {
     "specification_review": {
@@ -115,5 +115,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T20:41:24.9642570Z"
+  "updated_at": "2026-11-21T20:45:39.6856822Z"
 }
