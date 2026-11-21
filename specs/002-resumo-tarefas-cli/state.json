@@ -1,0 +1,107 @@
+{
+  "feature": "002-resumo-tarefas-cli",
+  "base_branch": "main",
+  "branch": "002-resumo-tarefas-cli",
+  "gh_path": "gh",
+  "pull_request": null,
+  "commands": {
+    "lint": null,
+    "build": null,
+    "test": null
+  },
+  "last_reviewed_commit": null,
+  "stage": "AGUARDANDO_REVISAO_HUMANA",
+  "artifacts": {
+    "requirements_checklist": {
+      "skill": "speckit-specify",
+      "stage": "E1",
+      "path": "specs/002-resumo-tarefas-cli/checklists/requirements.md"
+    },
+    "active_feature": {
+      "stage": "E1",
+      "local_only": true,
+      "path": ".specify/feature.json"
+    },
+    "specification": {
+      "skill": "speckit-specify",
+      "stage": "E1",
+      "path": "specs/002-resumo-tarefas-cli/spec.md"
+    }
+  },
+  "notifications": [
+    {
+      "resumo": "Especificacao resumo concluida",
+      "ts": null,
+      "agente": "analista_requisitos",
+      "feature": "002-resumo-tarefas-cli",
+      "status_tarefa": "HUMAN_REVIEW_REQUIRED",
+      "status": "FALHOU",
+      "channel_id": null,
+      "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
+      "transport": "slack_bot_api",
+      "erro": "missing_scope: requer chat:write em Bot Token Scopes e reinstalacao do app",
+      "notificado_em": null,
+      "artefato": "specs/002-resumo-tarefas-cli/spec.md",
+      "tentativas_retomada": 0,
+      "etapa": "E1",
+      "message_id": null
+    },
+    {
+      "resumo": "Especificacao resumo concluida",
+      "ts": null,
+      "agente": "analista_requisitos",
+      "feature": "002-resumo-tarefas-cli",
+      "status_tarefa": "HUMAN_REVIEW_REQUIRED",
+      "status": "ENVIADA",
+      "channel_id": null,
+      "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
+      "transport": "discord_webhook",
+      "erro": null,
+      "notificado_em": "2026-11-21T17:29:01.7045715-03:00",
+      "artefato": "specs/002-resumo-tarefas-cli/spec.md",
+      "tentativas_retomada": 0,
+      "etapa": "E1",
+      "message_id": "1573797417038647368"
+    }
+  ],
+  "gates": {
+    "E0": {
+      "base_commit": "6af78fc",
+      "status": "aprovado",
+      "evidence": [
+        "main limpa e identica origin/main apos fetch",
+        "gh autenticado; origin configurado; constituicao 1.0.0 preenchida",
+        "PR anterior #1 MERGED confirmado; estado reconciliado nesta branch"
+      ]
+    },
+    "E1": {
+      "status": "aguardando_revisao_humana",
+      "evidence": [
+        "Spec e checklist lidos integralmente pelo orquestrador",
+        "Ponteiro ativo corresponde; branch criada de main",
+        "git diff --check sem erros; raiz sem controles indevidos"
+      ],
+      "checklist_total": 16,
+      "checklist_checked": 16,
+      "agent": "analista_requisitos",
+      "functional_requirements": 8,
+      "success_criteria": 5,
+      "stories": 3,
+      "assumptions": [
+        "Tres linhas rotuladas na ordem Total, Pendentes, Concluidas",
+        "Reusar comportamento existente; sem opcoes adicionais"
+      ]
+    }
+  },
+  "tasks_done": [],
+  "correction_rounds": 0,
+  "blockers": [
+    "Slack E1: missing_scope; corrigir chat:write e reinstalar app antes da retomada exclusiva do envio. Discord confirmado, nao reenviar."
+  ],
+  "human_checkpoints": {
+    "specification_review": {
+      "status": "pendente"
+    }
+  },
+  "updated_at": "2026-11-21T20:29:51.4706519Z"
+}

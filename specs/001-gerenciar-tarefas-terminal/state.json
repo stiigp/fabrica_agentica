@@ -1,16 +1,16 @@
-﻿{
+{
   "feature": "001-gerenciar-tarefas-terminal",
   "base_branch": "main",
   "branch": "001-gerenciar-tarefas-terminal",
   "gh_path": "gh",
-  "pull_request": null,
+  "pull_request": "https://github.com/stiigp/fabrica_agentica/pull/1",
   "commands": {
     "test": "python -m unittest discover -s tests -t . -v",
     "lint": null,
     "build": "python -m compileall -q tarefas tests"
   },
   "last_reviewed_commit": null,
-  "stage": "PUBLICANDO_PR",
+  "stage": "ENTREGUE",
   "artifacts": {
     "specification": {
       "path": "specs/001-gerenciar-tarefas-terminal/spec.md",
@@ -303,9 +303,14 @@
       "status": "aprovado",
       "aprovado_em": "2026-11-18T20:10:46.2112293Z",
       "mensagem": "aprovo"
+    },
+    "merge_approval": {
+      "status": "aprovado",
+      "evidence": "gh pr list: PR #1 state MERGED",
+      "merged_at": "2026-11-21T19:46:55Z"
     }
   },
-  "updated_at": "2026-11-18T21:26:09.200Z",
+  "updated_at": "2026-11-21T20:29:51.4344905Z",
   "tasks_waived": [
     {
       "id": "T011",
