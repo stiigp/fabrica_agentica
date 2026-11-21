@@ -23,15 +23,17 @@ semantics:
   skill_side_effects: uma skill não pode ampliar o papel; hooks Git da skill devem ficar desabilitados para subagentes
 
 factory_notifications:
-  transport: discord_webhook
-  script: scripts/notificar-discord.ps1
-  credential: DISCORD_WEBHOOK_URL no processo ou no ambiente do usuario Windows
-  destination: somente endpoint HTTPS discord.com/api/webhooks do canal configurado pelo humano
+  transport: slack_bot_api
+  script: scripts/notificar-slack.ps1
+  setup_script: scripts/configurar-slack.ps1
+  setup_actor: humano fora das etapas
+  credential: SLACK_BOT_TOKEN e SLACK_CHANNEL_ID no processo ou no ambiente do usuario Windows
+  destination: somente POST HTTPS slack.com/api/chat.postMessage para o canal SLACK_CHANNEL_ID configurado pelo humano
   trigger: ao encerrar cada acionamento de subagente, incluindo fases, correcoes e bloqueios
   sender: o proprio subagente; o orquestrador nao envia em nome dele
   payload: somente agente, feature, etapa, ID do acionamento, status real, resumo curto, caminho de artefato e data
-  evidence: MESSAGE_ID confirmado pelo Discord com wait=true; registrar tambem EXECUCAO_ID e NOTIFICACAO_EM
-  secrets: nunca imprimir URL ou token, inclui-los no payload ou grava-los em codigo, testes, logs ou state.json
+  evidence: ok=true, canal e ts confirmados pela API; MESSAGE_ID e canal:ts; registrar SLACK_CHANNEL_ID, SLACK_TS, EXECUCAO_ID e NOTIFICACAO_EM
+  secrets: nunca imprimir o token, inclui-lo no payload ou grava-lo em codigo, testes, logs ou state.json
   retry: sem repeticao automatica; conferir o canal por EXECUCAO_ID antes de reenviar apos timeout
   failure: preservar resultado tecnico; registrar pendencia e retomar somente o envio pelo mesmo papel
   permissions: nao concede rede, acesso a segredos adicionais ou aprovacao nativa; respeitar a sessao
@@ -56,7 +58,8 @@ global:
   protected_configuration:
     - .codex/**
     - .agents/**
-    - scripts/notificar-discord.ps1
+    - scripts/notificar-slack.ps1
+    - scripts/configurar-slack.ps1
     - .specify/scripts/**
     - .specify/templates/**
     - .specify/memory/constitution.md
