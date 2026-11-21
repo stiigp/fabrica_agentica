@@ -10,7 +10,7 @@
     "build": "python -m compileall -q tarefas tests"
   },
   "last_reviewed_commit": null,
-  "stage": "IMPLEMENTANDO",
+  "stage": "REVISANDO",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -264,38 +264,72 @@
       "feature": "002-resumo-tarefas-cli"
     },
     {
-      "status_tarefa": null,
-      "notificado_em": null,
+      "status_tarefa": "DONE",
+      "notificado_em": "2026-11-21T18:07:26.5564478-03:00",
       "transport": "slack_bot_api",
       "etapa": "E4-Polish",
       "erro": null,
       "tentativas_retomada": 0,
-      "resumo": null,
-      "ts": null,
+      "resumo": "Polish quickstart validado",
+      "ts": "1795295248.753419",
       "execucao_id": "2a77e3ff-13cc-46ae-bea3-4633d3ea2dec",
       "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
       "feature": "002-resumo-tarefas-cli",
-      "channel_id": null,
-      "status": "PENDENTE",
-      "message_id": null,
+      "channel_id": "C0CKR9H7E77",
+      "status": "ENVIADA",
+      "message_id": "C0CKR9H7E77:1795295248.753419",
       "agente": "desenvolvedor"
     },
     {
-      "status_tarefa": null,
-      "notificado_em": null,
+      "status_tarefa": "DONE",
+      "notificado_em": "2026-11-21T18:07:27.0030986-03:00",
       "transport": "discord_webhook",
       "etapa": "E4-Polish",
       "erro": null,
       "tentativas_retomada": 0,
-      "resumo": null,
+      "resumo": "Polish quickstart validado",
       "ts": null,
       "execucao_id": "2a77e3ff-13cc-46ae-bea3-4633d3ea2dec",
       "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
       "feature": "002-resumo-tarefas-cli",
       "channel_id": null,
-      "status": "PENDENTE",
-      "message_id": null,
+      "status": "ENVIADA",
+      "message_id": "1573807085555290323",
       "agente": "desenvolvedor"
+    },
+    {
+      "message_id": null,
+      "transport": "slack_bot_api",
+      "erro": null,
+      "ts": null,
+      "status": "PENDENTE",
+      "tentativas_retomada": 0,
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": null,
+      "notificado_em": null,
+      "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
+      "resumo": null,
+      "etapa": "E5",
+      "status_tarefa": null,
+      "agente": "revisor_codigo",
+      "execucao_id": "5d4aa2ee-c2ae-444d-a44c-eccd47221a02"
+    },
+    {
+      "message_id": null,
+      "transport": "discord_webhook",
+      "erro": null,
+      "ts": null,
+      "status": "PENDENTE",
+      "tentativas_retomada": 0,
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": null,
+      "notificado_em": null,
+      "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
+      "resumo": null,
+      "etapa": "E5",
+      "status_tarefa": null,
+      "agente": "revisor_codigo",
+      "execucao_id": "5d4aa2ee-c2ae-444d-a44c-eccd47221a02"
     }
   ],
   "gates": {
@@ -378,7 +412,7 @@
       "tasks_count": 7
     },
     "E4": {
-      "status": "em_andamento",
+      "status": "aprovado",
       "agent": "desenvolvedor",
       "phases": {
         "Setup": {
@@ -430,9 +464,23 @@
             "Suite orquestrador79testes0 em20.062s; compileall0; diffcheck0; raiz sem controles"
           ],
           "status": "aprovado"
+        },
+        "Polish": {
+          "test_exit_code": 0,
+          "status": "aprovado",
+          "tasks": [
+            "T007"
+          ],
+          "evidence": [
+            "So marcacao T007 alterada; nenhuma tarefa pendente",
+            "Suite orquestrador79testes0 em20.759s; compileall0; diffcheck0; raiz sem controles",
+            "Desenvolvedor executou quickstart com temporarios/hashes/erros:0"
+          ],
+          "tests": 79,
+          "build_exit_code": 0
         }
       },
-      "current_phase": "Polish",
+      "current_phase": null,
       "devolucoes": 0
     }
   },
@@ -442,7 +490,8 @@
     "T003",
     "T004",
     "T005",
-    "T006"
+    "T006",
+    "T007"
   ],
   "correction_rounds": 0,
   "blockers": [],
@@ -453,5 +502,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T21:06:01.2780704Z"
+  "updated_at": "2026-11-21T21:08:25.9783468Z"
 }

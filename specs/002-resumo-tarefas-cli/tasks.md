@@ -53,7 +53,7 @@
 
 **Purpose**: verificar regressão e reprodução, sem trabalho adicional de infraestrutura.
 
-- [ ] T007 Validar `tarefas/`, `tests/` e `README.md` executando `python -m unittest discover -s tests -t . -v` e `python -m compileall -q tarefas tests`, exigindo código 0, testes descobertos e nenhum obrigatório ignorado; executar a sequência fictícia de `specs/002-resumo-tarefas-cli/quickstart.md`, conferindo zeros sem criação, 3/2/1, hashes, ajuda e falha controlada; registrar comandos e resultados no retorno E4 (FR-001–FR-008; SC-001–SC-005). Depende de T001–T006.
+- [X] T007 Validar `tarefas/`, `tests/` e `README.md` executando `python -m unittest discover -s tests -t . -v` e `python -m compileall -q tarefas tests`, exigindo código 0, testes descobertos e nenhum obrigatório ignorado; executar a sequência fictícia de `specs/002-resumo-tarefas-cli/quickstart.md`, conferindo zeros sem criação, 3/2/1, hashes, ajuda e falha controlada; registrar comandos e resultados no retorno E4 (FR-001–FR-008; SC-001–SC-005). Depende de T001–T006.
 
 Lint e typecheck não aplicáveis conforme plan.md: não há ferramenta configurada; não instalar dependências. Saídas compileall somente nos `__pycache__` previstos. Em todos os testes, usar TemporaryDirectory, HOME/USERPROFILE fictícios e PYTHONUTF8=1 nos subprocessos, sem dados pessoais.
 
