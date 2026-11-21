@@ -71,6 +71,28 @@ class CliOperacoesTests(unittest.TestCase):
                 self.salvar.assert_not_called()
                 self.assertEqual(tarefas, antes)
 
+    def test_resumo_padrao_resolve_home_ficticio_sem_salvar(self):
+        home = self.arquivo.parent / "home-ficticio"
+        with patch("pathlib.Path.home", return_value=home) as obter, redirect_stdout(
+            self.stdout
+        ), redirect_stderr(self.stderr):
+            codigo = self.cli.main(["resumo"])
+        self.assertEqual(codigo, 0)
+        self.assertEqual(self.stdout.getvalue(), "Total: 3\nPendentes: 2\nConcluídas: 1\n")
+        self.assertEqual(self.stderr.getvalue(), "")
+        obter.assert_called_once_with()
+        self.carregar.assert_called_once_with(home / ".tarefas" / "tarefas.json")
+        self.salvar.assert_not_called()
+
+    def test_resumo_falhas_de_leitura_sem_contagens_ou_gravacao(self):
+        for erro in (PermissionError("falha fictícia"), ErroLeitura("dados inválidos")):
+            with self.subTest(erro=type(erro).__name__):
+                self.carregar.side_effect = erro
+                self.assertEqual(self.executar("resumo"), 1)
+                self.assertEqual(self.stdout.getvalue(), "")
+                self.assertEqual(self.stderr.getvalue(), "Erro: não foi possível ler os dados locais.\n")
+                self.salvar.assert_not_called()
+
     def test_listar_ordenado_todos_campos_escape_reversivel_sem_mutacao_fr005(self):
         antes = list(self.tarefas)
         self.assertEqual(self.executar("listar"), 0)

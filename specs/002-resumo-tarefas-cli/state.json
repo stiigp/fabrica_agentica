@@ -197,14 +197,31 @@
     },
     {
       "transport": "slack_bot_api",
-      "channel_id": null,
-      "status_tarefa": null,
-      "resumo": null,
+      "channel_id": "C0CKR9H7E77",
+      "status_tarefa": "DONE",
+      "resumo": "US2 caminhos e erros validados",
       "feature": "002-resumo-tarefas-cli",
       "erro": null,
-      "status": "PENDENTE",
-      "notificado_em": null,
-      "message_id": null,
+      "status": "ENVIADA",
+      "notificado_em": "2026-11-21T18:01:46.2177714-03:00",
+      "message_id": "C0CKR9H7E77:1795294908.434419",
+      "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
+      "etapa": "E4-US2",
+      "ts": "1795294908.434419",
+      "agente": "desenvolvedor",
+      "artefato": "tests/integration/test_cli.py",
+      "tentativas_retomada": 0
+    },
+    {
+      "transport": "discord_webhook",
+      "channel_id": null,
+      "status_tarefa": "DONE",
+      "resumo": "US2 caminhos e erros validados",
+      "feature": "002-resumo-tarefas-cli",
+      "erro": null,
+      "status": "ENVIADA",
+      "notificado_em": "2026-11-21T18:01:46.6775187-03:00",
+      "message_id": "1573805658137043087",
       "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
       "etapa": "E4-US2",
       "ts": null,
@@ -213,21 +230,38 @@
       "tentativas_retomada": 0
     },
     {
-      "transport": "discord_webhook",
-      "channel_id": null,
-      "status_tarefa": null,
-      "resumo": null,
-      "feature": "002-resumo-tarefas-cli",
       "erro": null,
-      "status": "PENDENTE",
-      "notificado_em": null,
-      "message_id": null,
-      "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
-      "etapa": "E4-US2",
-      "ts": null,
       "agente": "desenvolvedor",
-      "artefato": "tests/integration/test_cli.py",
-      "tentativas_retomada": 0
+      "artefato": "README.md",
+      "tentativas_retomada": 0,
+      "resumo": null,
+      "status": "PENDENTE",
+      "etapa": "E4-US3",
+      "message_id": null,
+      "ts": null,
+      "channel_id": null,
+      "notificado_em": null,
+      "status_tarefa": null,
+      "execucao_id": "c6a70e72-217a-4417-8d94-0d9a61fdfca9",
+      "transport": "slack_bot_api",
+      "feature": "002-resumo-tarefas-cli"
+    },
+    {
+      "erro": null,
+      "agente": "desenvolvedor",
+      "artefato": "README.md",
+      "tentativas_retomada": 0,
+      "resumo": null,
+      "status": "PENDENTE",
+      "etapa": "E4-US3",
+      "message_id": null,
+      "ts": null,
+      "channel_id": null,
+      "notificado_em": null,
+      "status_tarefa": null,
+      "execucao_id": "c6a70e72-217a-4417-8d94-0d9a61fdfca9",
+      "transport": "discord_webhook",
+      "feature": "002-resumo-tarefas-cli"
     }
   ],
   "gates": {
@@ -334,15 +368,31 @@
             "T002"
           ],
           "tests": 72
+        },
+        "US2": {
+          "build_exit_code": 0,
+          "test_exit_code": 0,
+          "status": "aprovado",
+          "evidence": [
+            "Diff testes lido; producao preservada; so T003/T004 marcadas",
+            "Suite orquestrador78testes0 em24.103s; compileall0; diffcheck0; raiz sem controle"
+          ],
+          "tasks": [
+            "T003",
+            "T004"
+          ],
+          "tests": 78
         }
       },
-      "current_phase": "US2",
+      "current_phase": "US3",
       "devolucoes": 0
     }
   },
   "tasks_done": [
     "T001",
-    "T002"
+    "T002",
+    "T003",
+    "T004"
   ],
   "correction_rounds": 0,
   "blockers": [],
@@ -353,5 +403,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T20:59:35.0483113Z"
+  "updated_at": "2026-11-21T21:02:47.9500228Z"
 }
