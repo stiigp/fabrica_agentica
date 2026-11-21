@@ -3,14 +3,14 @@
   "base_branch": "main",
   "branch": "002-resumo-tarefas-cli",
   "gh_path": "gh",
-  "pull_request": null,
+  "pull_request": "https://github.com/stiigp/fabrica_agentica/pull/2",
   "commands": {
     "lint": null,
     "test": "python -m unittest discover -s tests -t . -v",
     "build": "python -m compileall -q tarefas tests"
   },
   "last_reviewed_commit": "7bb0cd73ca5b621182ccc0d2098f299cd587b793",
-  "stage": "PUBLICANDO_PR",
+  "stage": "AGUARDANDO_MERGE",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -601,13 +601,15 @@
     "E7": {
       "tests": 85,
       "ci": "nao_configurada",
-      "status": "em_andamento",
+      "status": "aprovado_validacao_local",
       "test_exit_code": 0,
       "evidence": [
         "git fetch origin0; git merge origin/main: already up to date",
         "origin/main sem .github; CI nao configurada",
         "Suite final orquestrador85testes0 em35.747s; compileall0; diffcheck0",
-        "20 evidencias notificacoes validadas por transporte e ID; nenhuma tarefa pendente"
+        "20 evidencias notificacoes validadas por transporte e ID; nenhuma tarefa pendente",
+        "PR #2 OPEN main <- 002-resumo-tarefas-cli, mergeable MERGEABLE",
+        "gh pr checks: no checks reported, exit1 por CI ausente; statusCheckRollup vazio"
       ],
       "build_exit_code": 0
     }
@@ -630,7 +632,10 @@
       "mensagem": "aprovado. nas próximas etapas não precisa pedir minha aprovação, só mantenha simples e toca até o final",
       "status": "aprovado",
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
+    },
+    "merge_approval": {
+      "status": "pendente"
     }
   },
-  "updated_at": "2026-11-21T21:17:55.3752056Z"
+  "updated_at": "2026-11-21T21:18:34.9347768Z"
 }
