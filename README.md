@@ -159,6 +159,42 @@ e continue da primeira etapa pendente.
 
 Pedidos para explicar ou adaptar a própria fábrica não iniciam esse fluxo.
 
+## Avisos de finalizacao no Discord
+
+Cada especialista envia seu proprio aviso ao encerrar um acionamento, incluindo fases de implementacao, correcoes, bloqueios e especificacoes aguardando revisao humana. O envio e feito por `scripts/notificar-discord.ps1`; um webhook compartilhado basta para os seis papeis. Os avisos nao substituem a aprovacao da spec nem o merge humano.
+
+Crie um webhook em um canal de texto do seu servidor Discord (Configuracoes do servidor > Integracoes > Webhooks) e salve a URL somente no ambiente local, fora do Git:
+
+```powershell
+$webhookUrl = Read-Host "Cole a URL do webhook Discord"
+[Environment]::SetEnvironmentVariable("DISCORD_WEBHOOK_URL", $webhookUrl, "User")
+$env:DISCORD_WEBHOOK_URL = $webhookUrl
+Remove-Variable webhookUrl
+```
+
+O script procura primeiro a variavel do processo e, no Windows, consulta tambem a variavel persistida do usuario. Assim, consegue usar o valor salvo mesmo se o processo atual nao o tiver herdado. A URL deve ser do endpoint HTTPS `discord.com/api/webhooks/...`; nao a coloque em prompts, TOMLs, YAML, testes, logs ou arquivos versionados. O script nao carrega `.env`.
+
+Para testar a conexao, na raiz do repositorio:
+
+```powershell
+$aviso = @{
+    Agente = 'teste_manual'
+    Feature = 'configuracao-da-fabrica'
+    Etapa = 'validacao-do-webhook'
+    ExecucaoId = [guid]::NewGuid().ToString('N')
+    Status = 'TESTE'
+    Resumo = 'Teste manual de notificacao; nao representa uma etapa de subagente.'
+    Artefato = 'scripts/notificar-discord.ps1'
+}
+& .\scripts\notificar-discord.ps1 @aviso
+```
+
+Em sucesso, a saida contem `NOTIFICACAO: ENVIADA`, `MESSAGE_ID`, `EXECUCAO_ID` e `NOTIFICACAO_EM`. O Discord confirma o envio com `wait=true`; mencoes como `@everyone` ficam desativadas. Em erro, o script termina com falha e um motivo sem exibir URL/token. Uma mensagem pode ter sido publicada antes de um timeout: confira o canal pelo `ExecucaoId` antes de reenviar. Nao ha repeticao automatica.
+
+Os seis TOMLs exigem o envio pelo proprio especialista antes do bloco final de retorno. O orquestrador fornece um ID unico a cada acionamento, confere a evidencia retornada e registra `notifications` no `state.json` da feature. Um envio pendente e retomado pelo mesmo papel, preservando os artefatos e sem reexecutar o trabalho. Etapas antigas nao recebem evidencias retroativas. No Checkpoint 1, qualquer pendencia de envio e apresentada junto da spec, e o fluxo ainda para para aprovacao humana.
+
+A permissao `send_factory_notification` no YAML e uma regra de comportamento limitada a esse script e canal; nao libera acesso de rede bloqueado pela sessao. No QA, a credencial e exclusiva do aviso de infraestrutura, e nao pode ser usada nos testes do produto. Recarregue a configuracao dos agentes antes de iniciar uma nova execucao da fabrica.
+
 ## Verificação e limites desta adaptação
 
 A validação dos arquivos deve conferir a sintaxe TOML/YAML, os IDs dos seis agentes, os caminhos de instruções e a correspondência entre registros e permissões. Isso não comprova uma entrega completa: a execução ponta a ponta requer o projeto, Spec Kit, constituição, Git, acesso ao GitHub e testes reais.
@@ -174,3 +210,34 @@ Se o cliente não disponibilizar os agentes personalizados ou as skills, atualiz
 - [Regras nativas de comandos e verificador execpolicy](https://learn.chatgpt.com/docs/agent-configuration/rules)
 - [Integração oficial do Spec Kit com Codex](https://github.com/github/spec-kit/blob/main/docs/integrations/codex.md)
 - [Instalação do Spec Kit](https://github.com/github/spec-kit/blob/main/docs/installation.md)
+
+## Aplicação de tarefas pelo terminal
+
+Pré-requisitos: Python 3.10 ou superior e PowerShell com terminal UTF-8. Execute os comandos na raiz deste repositório; não é necessário instalar dependências.
+
+```powershell
+python --version
+$diretorioDemo = Join-Path ([System.IO.Path]::GetTempPath()) ("tarefas-demo-" + [guid]::NewGuid().ToString("N"))
+$arquivo = Join-Path $diretorioDemo "tarefas.json"
+python -m tarefas --arquivo "$arquivo" listar
+python -m tarefas --arquivo "$arquivo" adicionar "Preparar relatório"
+python -m tarefas --arquivo "$arquivo" listar
+python -m tarefas --arquivo "$arquivo" concluir 1
+python -m tarefas --arquivo "$arquivo" concluir 1
+python -m tarefas --arquivo "$arquivo" adicionar "   "
+python -m tarefas --arquivo "$arquivo" concluir 999
+python -m tarefas --help
+```
+
+A listagem inicial informa `Nenhuma tarefa cadastrada.`; adicionar confirma `Tarefa 1 adicionada.`. A listagem seguinte mostra `1 | pendente | "Preparar relatório"`. Concluir confirma `Tarefa 1 concluída.`; repetir informa `Tarefa 1 já está concluída.`. Essas operações e a ajuda retornam código 0. A descrição em branco gera `Erro: a descrição é obrigatória.`, código 2; o ID inexistente gera `Erro: tarefa 999 não encontrada.`, código 1. Erros são enviados a stderr, sem confirmação de sucesso. Consulte `$LASTEXITCODE` imediatamente após cada comando.
+
+O JSON preserva as tarefas entre execuções usando o mesmo arquivo. O parâmetro `--arquivo` seleciona dados independentes; sem ele, os dados ficam em `.tarefas/tarefas.json` no diretório pessoal. Use o caminho temporário acima para demonstrações. Listar um arquivo ausente não o cria; falhas de leitura ou gravação são informadas sem substituir dados por uma lista vazia.
+
+Para verificar a aplicação:
+
+```powershell
+python -m unittest discover -s tests -t . -v
+python -m compileall -q tarefas tests
+```
+
+A suíte deve informar uma quantidade positiva de testes e terminar `OK`, código 0. Os testes usam dados fictícios em diretórios temporários, caminhos explícitos e home fictício; execuções consecutivas não dependem de resíduos nem acessam tarefas reais. Compileall deve retornar 0, normalmente sem saída. Lint e typecheck não são aplicáveis: não há ferramentas configuradas para essa CLI sem dependências externas. Mais exemplos e resultados estão no [guia de execução](specs/001-gerenciar-tarefas-terminal/quickstart.md).

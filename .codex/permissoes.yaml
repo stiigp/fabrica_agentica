@@ -22,6 +22,21 @@ semantics:
   test_outputs: caches, cobertura e saídas locais de teste/build são permitidos nos locais previstos no plano; não são autorização para editar fontes de outro papel
   skill_side_effects: uma skill não pode ampliar o papel; hooks Git da skill devem ficar desabilitados para subagentes
 
+factory_notifications:
+  transport: discord_webhook
+  script: scripts/notificar-discord.ps1
+  credential: DISCORD_WEBHOOK_URL no processo ou no ambiente do usuario Windows
+  destination: somente endpoint HTTPS discord.com/api/webhooks do canal configurado pelo humano
+  trigger: ao encerrar cada acionamento de subagente, incluindo fases, correcoes e bloqueios
+  sender: o proprio subagente; o orquestrador nao envia em nome dele
+  payload: somente agente, feature, etapa, ID do acionamento, status real, resumo curto, caminho de artefato e data
+  evidence: MESSAGE_ID confirmado pelo Discord com wait=true; registrar tambem EXECUCAO_ID e NOTIFICACAO_EM
+  secrets: nunca imprimir URL ou token, inclui-los no payload ou grava-los em codigo, testes, logs ou state.json
+  retry: sem repeticao automatica; conferir o canal por EXECUCAO_ID antes de reenviar apos timeout
+  failure: preservar resultado tecnico; registrar pendencia e retomar somente o envio pelo mesmo papel
+  permissions: nao concede rede, acesso a segredos adicionais ou aprovacao nativa; respeitar a sessao
+  scope_exception: aviso de infraestrutura autorizado pelo humano; nao e conversa externa nem teste do produto, inclusive para QA
+
 global:
   read_project: allow
   merge_pr_into_base: deny
@@ -41,6 +56,7 @@ global:
   protected_configuration:
     - .codex/**
     - .agents/**
+    - scripts/notificar-discord.ps1
     - .specify/scripts/**
     - .specify/templates/**
     - .specify/memory/constitution.md
@@ -81,6 +97,7 @@ roles:
       execute_verification_commands: allow
       create_feature_branch: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: deny
       stage_feature_changes: allow
       unstage_secrets: allow
       commit_feature_changes: allow
@@ -115,6 +132,7 @@ roles:
       inspect_project_and_git: allow
       run_assigned_speckit_scripts: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: allow
       create_branch: deny
       stage_or_commit: deny
       push: deny
@@ -149,6 +167,7 @@ roles:
       inspect_project_and_git: allow
       run_assigned_speckit_scripts: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: allow
       create_branch: deny
       stage_or_commit: deny
       push: deny
@@ -174,6 +193,7 @@ roles:
       inspect_project_and_git: allow
       run_assigned_speckit_scripts: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: allow
       create_branch: deny
       stage_or_commit: deny
       push: deny
@@ -218,6 +238,7 @@ roles:
       inspect_project_and_git: allow
       run_assigned_speckit_scripts: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: allow
       execute_test_lint_build: allow
       install_planned_dependencies: allow
       install_other_dependencies: justificar_no_retorno_e_submeter_a_revisao
@@ -246,6 +267,7 @@ roles:
     shell:
       inspect_project_and_git: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: allow
       execute_verification_commands: allow
       create_branch: deny
       stage_or_commit: deny
@@ -286,6 +308,7 @@ roles:
     shell:
       inspect_project_and_git: allow
       switch_existing_feature_branch: allow
+      send_factory_notification: allow
       execute_existing_suite_and_acceptance_tests: allow
       local_test_environment: allow
       create_branch: deny
