@@ -51,6 +51,26 @@ class CliOperacoesTests(unittest.TestCase):
         self.carregar.assert_called_once_with(self.arquivo)
         self.salvar.assert_not_called()
 
+    def test_resumo_contagens_sem_salvar_ou_mutar(self):
+        casos = (
+            (self.tarefas, "Total: 3\nPendentes: 2\nConcluídas: 1\n"),
+            ([], "Total: 0\nPendentes: 0\nConcluídas: 0\n"),
+            ([Tarefa(9, "A")], "Total: 1\nPendentes: 1\nConcluídas: 0\n"),
+            ([Tarefa(4, "B", "concluida")], "Total: 1\nPendentes: 0\nConcluídas: 1\n"),
+        )
+        self.salvar.side_effect = AssertionError("resumo não pode salvar")
+        for tarefas, esperado in casos:
+            with self.subTest(esperado=esperado):
+                antes = list(tarefas)
+                self.carregar.return_value = tarefas
+                self.carregar.reset_mock()
+                self.assertEqual(self.executar("resumo"), 0)
+                self.assertEqual(self.stdout.getvalue(), esperado)
+                self.assertEqual(self.stderr.getvalue(), "")
+                self.carregar.assert_called_once_with(self.arquivo)
+                self.salvar.assert_not_called()
+                self.assertEqual(tarefas, antes)
+
     def test_listar_ordenado_todos_campos_escape_reversivel_sem_mutacao_fr005(self):
         antes = list(self.tarefas)
         self.assertEqual(self.executar("listar"), 0)

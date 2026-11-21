@@ -7,6 +7,17 @@ class TarefaNaoEncontrada(Exception):
     """Identificador válido que não pertence ao conjunto de tarefas."""
 
 
+def resumir(tarefas: list[Tarefa]) -> tuple[int, int, int]:
+    """Conta total, pendentes e concluídas sem alterar a coleção."""
+    pendentes = concluidas = 0
+    for tarefa in tarefas:
+        if tarefa.status == "pendente":
+            pendentes += 1
+        else:
+            concluidas += 1
+    return pendentes + concluidas, pendentes, concluidas
+
+
 def adicionar(tarefas: list[Tarefa], descricao: str) -> tuple[list[Tarefa], Tarefa]:
     """Cria uma tarefa pendente em nova coleção, preservando a coleção recebida."""
     validar_descricao(descricao)

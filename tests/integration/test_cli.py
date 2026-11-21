@@ -58,6 +58,28 @@ class CliProcessoTests(unittest.TestCase):
         )
         return documento
 
+    def test_resumo_contagens_repetidas_preservam_bytes(self):
+        misto = self.preparar_us2()["tarefas"]
+        casos = (
+            (misto, "Total: 3\nPendentes: 2\nConcluídas: 1\n"),
+            ([], "Total: 0\nPendentes: 0\nConcluídas: 0\n"),
+            ([item for item in misto if item["status"] == "pendente"],
+             "Total: 2\nPendentes: 2\nConcluídas: 0\n"),
+            ([item for item in misto if item["status"] == "concluida"],
+             "Total: 1\nPendentes: 0\nConcluídas: 1\n"),
+        )
+        for tarefas, esperado in casos:
+            with self.subTest(esperado=esperado):
+                self.arquivo.write_text(
+                    json.dumps({"schema_version": 1, "tarefas": tarefas},
+                               ensure_ascii=False, indent=3) + "\n \t", encoding="utf-8"
+                )
+                antes = self.arquivo.read_bytes()
+                for _ in range(2):
+                    self.conferir_sucesso(self.executar_cli("resumo"), esperado)
+                    self.assertEqual(self.arquivo.read_bytes(), antes)
+                self.assertEqual(list(self.diretorio.iterdir()), [self.arquivo])
+
     def test_us2_muda_so_um_status_persiste_e_repete_sem_alteracao_sc002(self):
         inicial = self.preparar_us2()
         self.conferir_sucesso(self.executar_cli("concluir", "4"), "Tarefa 4 concluída.\n")

@@ -142,7 +142,7 @@
       "resumo": "Sete tarefas concluidas",
       "channel_id": "C0CKR9H7E77",
       "execucao_id": "688caec5-712d-4238-8891-9e0e8ad62724",
-      "notificado_em": "2026-11-21T17:54:46.5121240-03:00"
+      "notificado_em": "2026-11-21T17:54:46.512124-03:00"
     },
     {
       "tentativas_retomada": 0,
@@ -164,36 +164,70 @@
     {
       "erro": null,
       "etapa": "E4-US1",
-      "status": "PENDENTE",
+      "status": "ENVIADA",
       "transport": "slack_bot_api",
-      "resumo": null,
-      "status_tarefa": null,
+      "resumo": "US1 implementada e validada",
+      "status_tarefa": "DONE",
       "tentativas_retomada": 0,
-      "message_id": null,
+      "message_id": "C0CKR9H7E77:1795294715.658149",
+      "artefato": "tarefas/servico.py",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T17:58:33.2904527-03:00",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "desenvolvedor",
+      "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
+      "ts": "1795294715.658149"
+    },
+    {
+      "erro": null,
+      "etapa": "E4-US1",
+      "status": "ENVIADA",
+      "transport": "discord_webhook",
+      "resumo": "US1 implementada e validada",
+      "status_tarefa": "DONE",
+      "tentativas_retomada": 0,
+      "message_id": "1573804849655717990",
       "artefato": "tarefas/servico.py",
       "channel_id": null,
-      "notificado_em": null,
+      "notificado_em": "2026-11-21T17:58:33.8749164-03:00",
       "feature": "002-resumo-tarefas-cli",
       "agente": "desenvolvedor",
       "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
       "ts": null
     },
     {
-      "erro": null,
-      "etapa": "E4-US1",
-      "status": "PENDENTE",
-      "transport": "discord_webhook",
-      "resumo": null,
-      "status_tarefa": null,
-      "tentativas_retomada": 0,
-      "message_id": null,
-      "artefato": "tarefas/servico.py",
+      "transport": "slack_bot_api",
       "channel_id": null,
-      "notificado_em": null,
+      "status_tarefa": null,
+      "resumo": null,
       "feature": "002-resumo-tarefas-cli",
+      "erro": null,
+      "status": "PENDENTE",
+      "notificado_em": null,
+      "message_id": null,
+      "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
+      "etapa": "E4-US2",
+      "ts": null,
       "agente": "desenvolvedor",
-      "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
-      "ts": null
+      "artefato": "tests/integration/test_cli.py",
+      "tentativas_retomada": 0
+    },
+    {
+      "transport": "discord_webhook",
+      "channel_id": null,
+      "status_tarefa": null,
+      "resumo": null,
+      "feature": "002-resumo-tarefas-cli",
+      "erro": null,
+      "status": "PENDENTE",
+      "notificado_em": null,
+      "message_id": null,
+      "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
+      "etapa": "E4-US2",
+      "ts": null,
+      "agente": "desenvolvedor",
+      "artefato": "tests/integration/test_cli.py",
+      "tentativas_retomada": 0
     }
   ],
   "gates": {
@@ -286,13 +320,30 @@
         "Foundational": {
           "reason": "sem tarefas",
           "status": "nao_aplicavel"
+        },
+        "US1": {
+          "build_exit_code": 0,
+          "test_exit_code": 0,
+          "status": "aprovado",
+          "evidence": [
+            "Codigo/testes/diff lidos; somente T001/T002 marcadas",
+            "Suite orquestrador 72 testes OK em19.812s; compileall0; diffcheck0; raiz limpa"
+          ],
+          "tasks": [
+            "T001",
+            "T002"
+          ],
+          "tests": 72
         }
       },
-      "current_phase": "US1",
+      "current_phase": "US2",
       "devolucoes": 0
     }
   },
-  "tasks_done": [],
+  "tasks_done": [
+    "T001",
+    "T002"
+  ],
   "correction_rounds": 0,
   "blockers": [],
   "human_checkpoints": {
@@ -302,5 +353,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T20:55:29.3063913Z"
+  "updated_at": "2026-11-21T20:59:35.0483113Z"
 }
