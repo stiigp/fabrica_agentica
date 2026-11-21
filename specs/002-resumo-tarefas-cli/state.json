@@ -10,7 +10,7 @@
     "test": null
   },
   "last_reviewed_commit": null,
-  "stage": "ESPECIFICACAO_APROVADA",
+  "stage": "BLOCKED",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -39,7 +39,7 @@
       "channel_id": null,
       "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
       "transport": "slack_bot_api",
-      "erro": "missing_scope: requer chat:write em Bot Token Scopes e reinstalacao do app",
+      "erro": "Retomada exclusiva executada: missing_scope; conceder chat:write em Bot Token Scopes e reinstalar app. Saida 1. Limite de uma retomada atingido.",
       "notificado_em": null,
       "artefato": "specs/002-resumo-tarefas-cli/spec.md",
       "tentativas_retomada": 1,
@@ -91,12 +91,21 @@
         "Tres linhas rotuladas na ordem Total, Pendentes, Concluidas",
         "Reusar comportamento existente; sem opcoes adicionais"
       ]
+    },
+    "notification_recovery": {
+      "agent": "analista_requisitos",
+      "exit_code": 1,
+      "specification_approval_preserved": true,
+      "transport": "slack_bot_api",
+      "status": "bloqueado",
+      "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
+      "resume_stage": "E2"
     }
   },
   "tasks_done": [],
   "correction_rounds": 0,
   "blockers": [
-    "Slack E1: missing_scope; corrigir chat:write e reinstalar app antes da retomada exclusiva do envio. Discord confirmado, nao reenviar."
+    "Infraestrutura Slack E1 indisponivel apos unica retomada: missing_scope chat:write. Exige configuracao humana do app; Discord confirmado e nao reenviado. Spec aprovada; E2 nao iniciada."
   ],
   "human_checkpoints": {
     "specification_review": {
@@ -105,5 +114,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T20:31:00.9450203Z"
+  "updated_at": "2026-11-21T20:32:03.0811808Z"
 }
