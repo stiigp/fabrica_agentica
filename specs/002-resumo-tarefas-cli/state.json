@@ -9,8 +9,8 @@
     "test": "python -m unittest discover -s tests -t . -v",
     "build": "python -m compileall -q tarefas tests"
   },
-  "last_reviewed_commit": "ca8a047a9f4d568bb41ff9df40f17a3a20d6913e",
-  "stage": "TESTANDO",
+  "last_reviewed_commit": "7bb0cd73ca5b621182ccc0d2098f299cd587b793",
+  "stage": "PUBLICANDO_PR",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -375,37 +375,37 @@
     },
     {
       "agente": "revisor_codigo",
-      "resumo": null,
+      "resumo": "Testes QA aprovados sem apontamentos",
       "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
       "execucao_id": "836e9568-8b52-4ed8-8802-2c58017085ef",
       "erro": null,
       "feature": "002-resumo-tarefas-cli",
       "tentativas_retomada": 0,
-      "status_tarefa": null,
+      "status_tarefa": "DONE",
       "transport": "slack_bot_api",
-      "status": "PENDENTE",
-      "message_id": null,
+      "status": "ENVIADA",
+      "message_id": "C0CKR9H7E77:1795295768.293469",
       "etapa": "E6-revisao-testes-QA",
-      "ts": null,
-      "channel_id": null,
-      "notificado_em": null
+      "ts": "1795295768.293469",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T18:16:06.1281569-03:00"
     },
     {
       "agente": "revisor_codigo",
-      "resumo": null,
+      "resumo": "Testes QA aprovados sem apontamentos",
       "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
       "execucao_id": "836e9568-8b52-4ed8-8802-2c58017085ef",
       "erro": null,
       "feature": "002-resumo-tarefas-cli",
       "tentativas_retomada": 0,
-      "status_tarefa": null,
+      "status_tarefa": "DONE",
       "transport": "discord_webhook",
-      "status": "PENDENTE",
-      "message_id": null,
+      "status": "ENVIADA",
+      "message_id": "1573809264437493934",
       "etapa": "E6-revisao-testes-QA",
       "ts": null,
       "channel_id": null,
-      "notificado_em": null
+      "notificado_em": "2026-11-21T18:16:06.5541686-03:00"
     }
   ],
   "gates": {
@@ -578,14 +578,23 @@
         "Todos FR/SC/US mapeados; README real executado; diffcheck0 e raiz sem controles"
       ],
       "parecer": "aprovado",
-      "status": "aguardando_revisao_testes_qa",
+      "status": "aprovado",
       "agent": "qa",
       "defects": [],
       "qa_test_files": [
         "tests/acceptance/__init__.py",
         "tests/acceptance/test_resumo.py"
       ],
-      "devolucoes": 0
+      "devolucoes": 0,
+      "qa_tests_review": {
+        "findings": [],
+        "status": "aprovado",
+        "agent": "revisor_codigo",
+        "evidence": "Secao E6 review-report lida; revisao estatica dos dois arquivos sem apontamentos"
+      }
+    },
+    "E7": {
+      "status": "em_andamento"
     }
   },
   "tasks_done": [
@@ -606,5 +615,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T21:15:14.5250044Z"
+  "updated_at": "2026-11-21T21:16:34.8933625Z"
 }

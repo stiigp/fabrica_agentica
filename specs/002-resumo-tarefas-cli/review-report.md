@@ -34,3 +34,11 @@ Troca para branch existente executada com hooks desabilitados e elevação após
 ## Encaminhamento
 
 Avançar para E6 (QA), com aceite independente e posterior revisão dos testes adicionados pelo QA. Esta aprovação cobre a revisão de implementação, sem declarar a feature entregue ou substituir o merge humano.
+
+## E6 — Revisão dos testes do QA
+
+Parecer: **aprovado**, sem apontamentos. Revisão estática em 2026-11-21, limitada a `tests/acceptance/__init__.py` e `tests/acceptance/test_resumo.py`, intervalo `ca8a047a9f4d568bb41ff9df40f17a3a20d6913e..7bb0cd73ca5b621182ccc0d2098f299cd587b793`. Branch confirmada após switch com hooks desabilitados. Parecer E5 acima preservado.
+
+Os seis métodos verificam o contrato observável da spec: contagens exatas, código e stderr, seleção de origens, ausência sem criação, erros sem resumo parcial, bytes preservados, ajuda e exemplo real do README. Fixtures incluem categorias únicas, IDs não sequenciais e documentos inválidos. Processos reais usam temporários e home fictício; PermissionError é determinístico. As ajudas devem retornar 0 e apresentar descrição, de modo que acesso indevido aos alvos protegidos não passe silenciosamente. O teste documental extrai os cinco comandos do README, confere sua quantidade, o comando final, a saída documentada e a saída fixa 3/2/1; substitui apenas o caminho por temporário. O arquivo de inicialização permite descoberta sem efeitos adicionais. Não foram identificados falsos positivos ou fragilidade material no escopo atual.
+
+Nenhum comando de testes foi repetido nesta retomada: revisão estática apoiada nas execuções anteriores do QA registradas em `qa-report.md` e confirmadas pelo orquestrador no handoff (85 testes da suíte, seis de aceite e compileall, todos código 0). Nenhuma alteração de produto, testes ou state foi realizada. Próximo: E7, revisão/publicação do PR pelo orquestrador.
