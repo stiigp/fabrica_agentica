@@ -26,7 +26,7 @@ O fluxo é construído sobre o **GitHub Spec Kit**. As skills `speckit-*` são a
 Esta regra prevalece sobre qualquer outra deste documento, inclusive sobre a autonomia entre checkpoints. Sempre que o Analista de Requisitos retornar uma especificação concluída com `STATUS: HUMAN_REVIEW_REQUIRED` (de `speckit-specify` ou de `speckit-clarify`), o seu turno tem **exatamente** estes passos, nesta ordem, e nada mais. Se ele retornar `NEEDS_CLARIFICATION` ou `BLOCKED`, trate as perguntas ou o bloqueio pelas regras de avanço, sem acionar o Arquiteto:
 
 1. Crie ou mude para a branch da feature (ver [Execução das skills](#execução-das-skills)).
-2. Atualize `state.json`: `stage` = `AGUARDANDO_REVISAO_HUMANA` e `human_checkpoints.specification_review` = `{"status": "pendente"}`.
+2. Atualize `state.json`: `stage` = `AGUARDANDO_REVISAO_HUMANA` e `human_checkpoints.specification_review` = `{"status": "pendente"}`. Registre tambem em `notifications` a evidencia ou a pendencia do aviso do Analista, sem enviar em nome dele. Se o envio falhou, apresente a pendencia junto da spec; a retomada exclusiva do envio so ocorre depois da resposta humana, antes de E2.
 3. Faça o commit da análise na branch da feature (spec, checklists e `state.json`; ex.: `<feature>: E1 especificação para revisão`, ou `<feature>: E1 esclarecimentos, rodada N` após o `speckit-clarify`).
 4. Apresente ao humano o caminho da `spec.md`, um resumo dos requisitos (`FR-xxx`), critérios de sucesso (`SC-xxx`) e premissas, e **pergunte** se ele aprova a spec ou quer ajustes (ex.: *"Revise `specs/<feature>/spec.md`. Responda **aprovado** para iniciar o plano técnico, ou descreva os ajustes."*).
 5. **Encerre o turno.** Depois da pergunta, não execute nenhuma ferramenta: nenhum `git push`, nenhum acionamento de subagente (Arquiteto ou qualquer outro).
@@ -221,7 +221,8 @@ Todo acionamento de subagente deve conter, nesta ordem:
 7. **Local das anotações:** caminho absoluto de `specs/<feature>/notes/` e a instrução de não criar arquivos de controle na raiz do projeto.
 8. **Comandos de verificação:** o conteúdo de `state.json.commands` (a partir de E3).
 9. **Escopo específico do acionamento:** a fase de `tasks.md` (Desenvolvedor em E4), os apontamentos a corrigir (rodadas de correção) ou o intervalo de commits e os arquivos a revisar (Revisor).
-10. **Formato de retorno:** o bloco de status abaixo.
+10. **Notificacao de finalizacao:** caminho absoluto de `scripts/notificar-discord.ps1`, ID do proprio papel, feature, etapa/fase e um `ExecucaoId` unico gerado por voce (GUID). Persista esse ID em `notifications` como `PENDENTE` antes da delegacao, quando ja houver diretorio de feature. No primeiro specify, mantenha-o no handoff e grave-o junto do estado inicial apos a skill criar a feature. Informe um identificador provisorio de feature para falhas anteriores a criacao da spec. Exija o envio pelo proprio subagente antes do bloco final, usando o status real; nunca inclua a URL no handoff. Inclua tambem nos handoffs de correcao, esclarecimento e revisao dos testes do QA.
+11. **Formato de retorno:** o bloco de status abaixo, precedido pela evidencia ou falha da notificacao.
 
 ## Formato de retorno exigido
 
@@ -238,6 +239,15 @@ PRÓXIMO: <etapa sugerida, ou "nenhum">
 
 Se o retorno não vier nesse formato, peça a correção antes de considerar a etapa concluída. Compare `ARTEFATOS` com o disco: arquivo gerado pela skill e ausente do disco reprova a etapa.
 
+## Conferencia das notificacoes no Discord
+
+- Cada subagente executa o script ao finalizar cada acionamento. O orquestrador confere e registra a evidencia; nao publica em nome dos especialistas nem usa um teste manual como prova de execucao deles. A autorizacao e restrita ao canal configurado e nao libera outras mensagens externas.
+- Antes do bloco final, exija `NOTIFICACAO: ENVIADA`, `MESSAGE_ID`, `EXECUCAO_ID` e `NOTIFICACAO_EM` copiados da resposta real do script. Confira a saida da ferramenta de execucao retornada pelo subagente, o codigo de saida 0, um `MESSAGE_ID` numerico e o `EXECUCAO_ID` do handoff. Relato sem evidencia nao confirma o envio. Nao leia nem exiba o segredo para conferir.
+- Atualize o registro correspondente em `state.json.notifications`, preservando o historico dos demais acionamentos. `Status` tecnico e parecer continuam separados do estado da notificacao: `DONE` pode acompanhar parecer reprovado, e `HUMAN_REVIEW_REQUIRED` nao e aprovacao da spec.
+- Em falha ou ausencia de evidencia, registre `FALHOU` e o motivo sem segredos, preservando artefatos e resultado tecnico. Antes da proxima etapa tecnica, devolva somente o envio ao mesmo papel, com o mesmo `ExecucaoId`, resumo, status e artefatos salvos. Nao reexecute skills, testes ou implementacao por uma falha de notificacao. Uma devolucao exclusiva de envio nao consome rodadas de correcao do produto; limite a uma tentativa de retomada por acionamento. Se continuar indisponivel, registre o bloqueio de infraestrutura e informe o humano.
+- Se houver timeout ou resposta sem `MESSAGE_ID`, nao tente reenviar automaticamente: o Discord pode ter publicado. Peca ao humano conferir a mensagem pelo `ExecucaoId` e informar seu ID/link, ou confirmar que ela nao existe antes de uma retomada de envio. Registre a origem dessa evidencia como confirmacao humana. Um ID nao confirmado permanece pendente, nunca ENVIADA.
+- O Checkpoint 1 prevalece: quando o Analista retornar `HUMAN_REVIEW_REQUIRED`, siga somente os cinco passos obrigatorios, inclusive quando faltar notificacao. Apresente a pendencia junto da spec, encerre o turno e so retome o envio depois da resposta humana. A notificacao nunca aprova a spec nem autoriza acionar o Arquiteto antecipadamente.
+
 ## Estado do fluxo
 
 Mantenha `specs/<feature>/state.json` com esta forma:
@@ -253,6 +263,7 @@ Mantenha `specs/<feature>/state.json` com esta forma:
   "last_reviewed_commit": "<SHA do HEAD na última revisão aprovada>",
   "stage": "NOVA | ESPECIFICANDO | AGUARDANDO_REVISAO_HUMANA | ESPECIFICACAO_APROVADA | PLANEJANDO | CRIANDO_TAREFAS | ANALISANDO | IMPLEMENTANDO | REVISANDO | TESTANDO | PUBLICANDO_PR | AGUARDANDO_MERGE | ENTREGUE | CANCELADA | BLOCKED",
   "artifacts": {},
+  "notifications": [],
   "gates": {},
   "tasks_done": [],
   "correction_rounds": 0,
@@ -267,6 +278,7 @@ Mantenha `specs/<feature>/state.json` com esta forma:
 - Atualize `stage`, `gates`, `tasks_done`, `correction_rounds`, `blockers` e `updated_at` a cada etapa concluída ou reprovada.
 - `human_checkpoints` registra os dois checkpoints: `specification_review` (Checkpoint 1) e `merge_approval` (Checkpoint 2), cada um como objeto com `status` `pendente` ou `aprovado` (ex.: `{"specification_review": {"status": "aprovado", "aprovado_em": "<ISO-8601>", "mensagem": "<trecho literal>"}, "merge_approval": {"status": "pendente"}}`).
 - Registre em `gates` também as premissas técnicas assumidas de forma autônoma e quem as tomou, para auditoria e para a descrição do PR.
+- `notifications` e uma lista por acionamento, com `execucao_id`, `agente`, `feature`, `etapa`, `status_tarefa`, `resumo`, `artefato`, `status` (`PENDENTE`, `ENVIADA` ou `FALHOU`), `message_id` (string ou null), `notificado_em` (ISO-8601 ou null), `tentativas_retomada` e `erro` sem segredos. Crie campos ausentes ao retomar estados antigos; nao invente notificacoes retroativas de etapas concluidas. So voce escreve o estado. Nunca registre URL/token do webhook.
 
 ## Regras invioláveis
 

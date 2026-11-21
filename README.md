@@ -159,6 +159,42 @@ e continue da primeira etapa pendente.
 
 Pedidos para explicar ou adaptar a própria fábrica não iniciam esse fluxo.
 
+## Avisos de finalizacao no Discord
+
+Cada especialista envia seu proprio aviso ao encerrar um acionamento, incluindo fases de implementacao, correcoes, bloqueios e especificacoes aguardando revisao humana. O envio e feito por `scripts/notificar-discord.ps1`; um webhook compartilhado basta para os seis papeis. Os avisos nao substituem a aprovacao da spec nem o merge humano.
+
+Crie um webhook em um canal de texto do seu servidor Discord (Configuracoes do servidor > Integracoes > Webhooks) e salve a URL somente no ambiente local, fora do Git:
+
+```powershell
+$webhookUrl = Read-Host "Cole a URL do webhook Discord"
+[Environment]::SetEnvironmentVariable("DISCORD_WEBHOOK_URL", $webhookUrl, "User")
+$env:DISCORD_WEBHOOK_URL = $webhookUrl
+Remove-Variable webhookUrl
+```
+
+O script procura primeiro a variavel do processo e, no Windows, consulta tambem a variavel persistida do usuario. Assim, consegue usar o valor salvo mesmo se o processo atual nao o tiver herdado. A URL deve ser do endpoint HTTPS `discord.com/api/webhooks/...`; nao a coloque em prompts, TOMLs, YAML, testes, logs ou arquivos versionados. O script nao carrega `.env`.
+
+Para testar a conexao, na raiz do repositorio:
+
+```powershell
+$aviso = @{
+    Agente = 'teste_manual'
+    Feature = 'configuracao-da-fabrica'
+    Etapa = 'validacao-do-webhook'
+    ExecucaoId = [guid]::NewGuid().ToString('N')
+    Status = 'TESTE'
+    Resumo = 'Teste manual de notificacao; nao representa uma etapa de subagente.'
+    Artefato = 'scripts/notificar-discord.ps1'
+}
+& .\scripts\notificar-discord.ps1 @aviso
+```
+
+Em sucesso, a saida contem `NOTIFICACAO: ENVIADA`, `MESSAGE_ID`, `EXECUCAO_ID` e `NOTIFICACAO_EM`. O Discord confirma o envio com `wait=true`; mencoes como `@everyone` ficam desativadas. Em erro, o script termina com falha e um motivo sem exibir URL/token. Uma mensagem pode ter sido publicada antes de um timeout: confira o canal pelo `ExecucaoId` antes de reenviar. Nao ha repeticao automatica.
+
+Os seis TOMLs exigem o envio pelo proprio especialista antes do bloco final de retorno. O orquestrador fornece um ID unico a cada acionamento, confere a evidencia retornada e registra `notifications` no `state.json` da feature. Um envio pendente e retomado pelo mesmo papel, preservando os artefatos e sem reexecutar o trabalho. Etapas antigas nao recebem evidencias retroativas. No Checkpoint 1, qualquer pendencia de envio e apresentada junto da spec, e o fluxo ainda para para aprovacao humana.
+
+A permissao `send_factory_notification` no YAML e uma regra de comportamento limitada a esse script e canal; nao libera acesso de rede bloqueado pela sessao. No QA, a credencial e exclusiva do aviso de infraestrutura, e nao pode ser usada nos testes do produto. Recarregue a configuracao dos agentes antes de iniciar uma nova execucao da fabrica.
+
 ## Verificação e limites desta adaptação
 
 A validação dos arquivos deve conferir a sintaxe TOML/YAML, os IDs dos seis agentes, os caminhos de instruções e a correspondência entre registros e permissões. Isso não comprova uma entrega completa: a execução ponta a ponta requer o projeto, Spec Kit, constituição, Git, acesso ao GitHub e testes reais.
