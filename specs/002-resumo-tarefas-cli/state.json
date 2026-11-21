@@ -9,8 +9,8 @@
     "test": "python -m unittest discover -s tests -t . -v",
     "build": "python -m compileall -q tarefas tests"
   },
-  "last_reviewed_commit": null,
-  "stage": "REVISANDO",
+  "last_reviewed_commit": "ca8a047a9f4d568bb41ff9df40f17a3a20d6913e",
+  "stage": "TESTANDO",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -56,6 +56,10 @@
       "skill": "speckit-tasks",
       "stage": "E3",
       "path": "specs/002-resumo-tarefas-cli/tasks.md"
+    },
+    "review": {
+      "path": "specs/002-resumo-tarefas-cli/review-report.md",
+      "stage": "E5"
     }
   },
   "notifications": [
@@ -298,38 +302,72 @@
       "agente": "desenvolvedor"
     },
     {
-      "message_id": null,
+      "message_id": "C0CKR9H7E77:1795295417.160979",
       "transport": "slack_bot_api",
       "erro": null,
-      "ts": null,
-      "status": "PENDENTE",
+      "ts": "1795295417.160979",
+      "status": "ENVIADA",
       "tentativas_retomada": 0,
       "feature": "002-resumo-tarefas-cli",
-      "channel_id": null,
-      "notificado_em": null,
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T18:10:14.9655339-03:00",
       "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
-      "resumo": null,
+      "resumo": "Revisao aprovada sem apontamentos",
       "etapa": "E5",
-      "status_tarefa": null,
+      "status_tarefa": "DONE",
       "agente": "revisor_codigo",
       "execucao_id": "5d4aa2ee-c2ae-444d-a44c-eccd47221a02"
     },
     {
-      "message_id": null,
+      "message_id": "1573807792001916969",
       "transport": "discord_webhook",
       "erro": null,
       "ts": null,
-      "status": "PENDENTE",
+      "status": "ENVIADA",
       "tentativas_retomada": 0,
       "feature": "002-resumo-tarefas-cli",
       "channel_id": null,
-      "notificado_em": null,
+      "notificado_em": "2026-11-21T18:10:15.3907795-03:00",
       "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
-      "resumo": null,
+      "resumo": "Revisao aprovada sem apontamentos",
       "etapa": "E5",
-      "status_tarefa": null,
+      "status_tarefa": "DONE",
       "agente": "revisor_codigo",
       "execucao_id": "5d4aa2ee-c2ae-444d-a44c-eccd47221a02"
+    },
+    {
+      "tentativas_retomada": 0,
+      "etapa": "E6",
+      "ts": null,
+      "erro": null,
+      "agente": "qa",
+      "execucao_id": "5d1245d9-f299-4d51-a897-2438300db1fe",
+      "feature": "002-resumo-tarefas-cli",
+      "artefato": "specs/002-resumo-tarefas-cli/qa-report.md",
+      "channel_id": null,
+      "message_id": null,
+      "resumo": null,
+      "transport": "slack_bot_api",
+      "status": "PENDENTE",
+      "notificado_em": null,
+      "status_tarefa": null
+    },
+    {
+      "tentativas_retomada": 0,
+      "etapa": "E6",
+      "ts": null,
+      "erro": null,
+      "agente": "qa",
+      "execucao_id": "5d1245d9-f299-4d51-a897-2438300db1fe",
+      "feature": "002-resumo-tarefas-cli",
+      "artefato": "specs/002-resumo-tarefas-cli/qa-report.md",
+      "channel_id": null,
+      "message_id": null,
+      "resumo": null,
+      "transport": "discord_webhook",
+      "status": "PENDENTE",
+      "notificado_em": null,
+      "status_tarefa": null
     }
   ],
   "gates": {
@@ -482,6 +520,17 @@
       },
       "current_phase": null,
       "devolucoes": 0
+    },
+    "E5": {
+      "status": "aprovado",
+      "parecer": "aprovado",
+      "agent": "revisor_codigo",
+      "devolucoes": 0,
+      "findings": [],
+      "evidence": [
+        "Relatorio lido; sem apontamentos ou bloqueantes; diffcheck0 e raiz correta",
+        "Revisor executou79testes0/compileall0; produto inalterado desde validacao orquestrador"
+      ]
     }
   },
   "tasks_done": [
@@ -502,5 +551,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T21:08:25.9783468Z"
+  "updated_at": "2026-11-21T21:10:51.1249047Z"
 }
