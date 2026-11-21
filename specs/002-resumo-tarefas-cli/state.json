@@ -10,7 +10,7 @@
     "test": null
   },
   "last_reviewed_commit": null,
-  "stage": "AGUARDANDO_REVISAO_HUMANA",
+  "stage": "ESPECIFICACAO_APROVADA",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -42,7 +42,7 @@
       "erro": "missing_scope: requer chat:write em Bot Token Scopes e reinstalacao do app",
       "notificado_em": null,
       "artefato": "specs/002-resumo-tarefas-cli/spec.md",
-      "tentativas_retomada": 0,
+      "tentativas_retomada": 1,
       "etapa": "E1",
       "message_id": null
     },
@@ -75,7 +75,7 @@
       ]
     },
     "E1": {
-      "status": "aguardando_revisao_humana",
+      "status": "aprovado",
       "evidence": [
         "Spec e checklist lidos integralmente pelo orquestrador",
         "Ponteiro ativo corresponde; branch criada de main",
@@ -100,8 +100,10 @@
   ],
   "human_checkpoints": {
     "specification_review": {
-      "status": "pendente"
+      "mensagem": "aprovado. nas próximas etapas não precisa pedir minha aprovação, só mantenha simples e toca até o final",
+      "status": "aprovado",
+      "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T20:29:51.4706519Z"
+  "updated_at": "2026-11-21T20:31:00.9450203Z"
 }
