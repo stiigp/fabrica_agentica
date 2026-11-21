@@ -6,11 +6,11 @@
   "pull_request": null,
   "commands": {
     "lint": null,
-    "build": null,
-    "test": null
+    "test": "python -m unittest discover -s tests -t . -v",
+    "build": "python -m compileall -q tarefas tests"
   },
   "last_reviewed_commit": null,
-  "stage": "BLOCKED",
+  "stage": "IMPLEMENTANDO",
   "artifacts": {
     "requirements_checklist": {
       "skill": "speckit-specify",
@@ -26,25 +26,55 @@
       "skill": "speckit-specify",
       "stage": "E1",
       "path": "specs/002-resumo-tarefas-cli/spec.md"
+    },
+    "plan.md": {
+      "path": "specs/002-resumo-tarefas-cli/plan.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "research.md": {
+      "path": "specs/002-resumo-tarefas-cli/research.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "data-model.md": {
+      "path": "specs/002-resumo-tarefas-cli/data-model.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "quickstart.md": {
+      "path": "specs/002-resumo-tarefas-cli/quickstart.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "contracts/cli-resumo.md": {
+      "path": "specs/002-resumo-tarefas-cli/contracts/cli-resumo.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "tasks": {
+      "skill": "speckit-tasks",
+      "stage": "E3",
+      "path": "specs/002-resumo-tarefas-cli/tasks.md"
     }
   },
   "notifications": [
     {
       "resumo": "Especificacao resumo concluida",
-      "ts": null,
+      "ts": "1795294050.674369",
       "agente": "analista_requisitos",
       "feature": "002-resumo-tarefas-cli",
       "status_tarefa": "HUMAN_REVIEW_REQUIRED",
-      "status": "FALHOU",
-      "channel_id": null,
+      "status": "ENVIADA",
+      "channel_id": "C0CKR9H7E77",
       "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
       "transport": "slack_bot_api",
-      "erro": "Terceira retomada expressamente autorizada: Slack retornou novamente not_in_channel; saida 1. Sem reenvio Discord.",
-      "notificado_em": null,
+      "erro": null,
+      "notificado_em": "2026-11-21T17:47:28.3842076-03:00",
       "artefato": "specs/002-resumo-tarefas-cli/spec.md",
-      "tentativas_retomada": 3,
+      "tentativas_retomada": 4,
       "etapa": "E1",
-      "message_id": null
+      "message_id": "C0CKR9H7E77:1795294050.674369"
     },
     {
       "resumo": "Especificacao resumo concluida",
@@ -62,6 +92,108 @@
       "tentativas_retomada": 0,
       "etapa": "E1",
       "message_id": "1573797417038647368"
+    },
+    {
+      "tentativas_retomada": 0,
+      "artefato": "specs/002-resumo-tarefas-cli/plan.md",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "arquiteto",
+      "ts": "1795294303.537949",
+      "execucao_id": "50888f50-2553-4456-b996-53946b3f3135",
+      "status": "ENVIADA",
+      "transport": "slack_bot_api",
+      "channel_id": "C0CKR9H7E77",
+      "erro": null,
+      "message_id": "C0CKR9H7E77:1795294303.537949",
+      "status_tarefa": "DONE",
+      "etapa": "E2",
+      "resumo": "Plano minimo concluido",
+      "notificado_em": "2026-11-21T17:51:41.2706462-03:00"
+    },
+    {
+      "tentativas_retomada": 0,
+      "artefato": "specs/002-resumo-tarefas-cli/plan.md",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "arquiteto",
+      "ts": null,
+      "execucao_id": "50888f50-2553-4456-b996-53946b3f3135",
+      "status": "ENVIADA",
+      "transport": "discord_webhook",
+      "channel_id": null,
+      "erro": null,
+      "message_id": "1573803121216327934",
+      "status_tarefa": "DONE",
+      "etapa": "E2",
+      "resumo": "Plano minimo concluido",
+      "notificado_em": "2026-11-21T17:51:41.7329096-03:00"
+    },
+    {
+      "tentativas_retomada": 0,
+      "erro": null,
+      "agente": "criador_tarefas",
+      "ts": "1795294488.747379",
+      "status_tarefa": "DONE",
+      "feature": "002-resumo-tarefas-cli",
+      "status": "ENVIADA",
+      "transport": "slack_bot_api",
+      "message_id": "C0CKR9H7E77:1795294488.747379",
+      "etapa": "E3",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "resumo": "Sete tarefas concluidas",
+      "channel_id": "C0CKR9H7E77",
+      "execucao_id": "688caec5-712d-4238-8891-9e0e8ad62724",
+      "notificado_em": "2026-11-21T17:54:46.5121240-03:00"
+    },
+    {
+      "tentativas_retomada": 0,
+      "erro": null,
+      "agente": "criador_tarefas",
+      "ts": null,
+      "status_tarefa": "DONE",
+      "feature": "002-resumo-tarefas-cli",
+      "status": "ENVIADA",
+      "transport": "discord_webhook",
+      "message_id": "1573803897859084429",
+      "etapa": "E3",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "resumo": "Sete tarefas concluidas",
+      "channel_id": null,
+      "execucao_id": "688caec5-712d-4238-8891-9e0e8ad62724",
+      "notificado_em": "2026-11-21T17:54:46.9329043-03:00"
+    },
+    {
+      "erro": null,
+      "etapa": "E4-US1",
+      "status": "PENDENTE",
+      "transport": "slack_bot_api",
+      "resumo": null,
+      "status_tarefa": null,
+      "tentativas_retomada": 0,
+      "message_id": null,
+      "artefato": "tarefas/servico.py",
+      "channel_id": null,
+      "notificado_em": null,
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "desenvolvedor",
+      "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
+      "ts": null
+    },
+    {
+      "erro": null,
+      "etapa": "E4-US1",
+      "status": "PENDENTE",
+      "transport": "discord_webhook",
+      "resumo": null,
+      "status_tarefa": null,
+      "tentativas_retomada": 0,
+      "message_id": null,
+      "artefato": "tarefas/servico.py",
+      "channel_id": null,
+      "notificado_em": null,
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "desenvolvedor",
+      "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
+      "ts": null
     }
   ],
   "gates": {
@@ -94,20 +226,75 @@
     },
     "notification_recovery": {
       "agent": "analista_requisitos",
-      "exit_code": 1,
+      "exit_code": 0,
       "specification_approval_preserved": true,
       "transport": "slack_bot_api",
-      "status": "bloqueado",
+      "status": "aprovado",
       "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
       "resume_stage": "E2",
-      "human_retry_authorization": "estranho pois aqui o bot parece estar no canal, tenta novamente"
+      "human_retry_authorization": "meu colega já tinha colocado mas agora eu coloquei de novo por aqui, tenta de novo"
+    },
+    "E2": {
+      "assumptions": [
+        "Funcao pura retorna tupla; sem nova classe/dependencia",
+        "Reusar carregar e caminho; retorno antes salvar",
+        "QA tests/acceptance separado; lint nao aplicavel"
+      ],
+      "agent": "arquiteto",
+      "status": "aprovado",
+      "constitution_check": "PASS pre e pos",
+      "evidence": [
+        "Cinco artefatos lidos; branch e ponteiro corretos; diff check 0; raiz sem controles"
+      ],
+      "devolucoes": 0
+    },
+    "E3": {
+      "status": "aprovado",
+      "agent": "criador_tarefas",
+      "evidence": [
+        "tasks.md lido integralmente; US e FR/SC rastreados; nenhuma tarefa E4 exclusiva QA",
+        "Formato e dependencias corretos; diff check 0; raiz sem controle indevido"
+      ],
+      "total_tasks": 7,
+      "devolucoes": 0
+    },
+    "E3.5": {
+      "coverage_percent": 100,
+      "high_issues": 0,
+      "evidence": [
+        "check-prerequisites -Json -RequireSpec -RequireTasks -IncludeTasks 0",
+        "Spec/plano/tasks/data-model/constituicao conferidos sem inconsistencias; hooks ausentes",
+        "Campos Tarefa id/descricao/status, JSON schema_version/tarefas e tupla Resumo cobertos T001/T002; nenhuma nova restricao"
+      ],
+      "unmapped_tasks": [],
+      "requirements_count": 13,
+      "status": "aprovado",
+      "skill": "speckit-analyze",
+      "critical_issues": 0,
+      "duplication_count": 0,
+      "ambiguity_count": 0,
+      "tasks_count": 7
+    },
+    "E4": {
+      "status": "em_andamento",
+      "agent": "desenvolvedor",
+      "phases": {
+        "Setup": {
+          "reason": "sem tarefas",
+          "status": "nao_aplicavel"
+        },
+        "Foundational": {
+          "reason": "sem tarefas",
+          "status": "nao_aplicavel"
+        }
+      },
+      "current_phase": "US1",
+      "devolucoes": 0
     }
   },
   "tasks_done": [],
   "correction_rounds": 0,
-  "blockers": [
-    "Slack E1 permanece not_in_channel apos nova tentativa humana autorizada. Confirmar se o bot associado ao token pertence ao canal configurado em SLACK_CHANNEL_ID. Spec aprovada; E2 nao iniciada; Discord confirmado."
-  ],
+  "blockers": [],
   "human_checkpoints": {
     "specification_review": {
       "mensagem": "aprovado. nas próximas etapas não precisa pedir minha aprovação, só mantenha simples e toca até o final",
@@ -115,5 +302,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T20:45:39.6856822Z"
+  "updated_at": "2026-11-21T20:55:29.3063913Z"
 }
