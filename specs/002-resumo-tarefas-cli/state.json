@@ -64,6 +64,11 @@
     "qa": {
       "path": "specs/002-resumo-tarefas-cli/qa-report.md",
       "stage": "E6"
+    },
+    "pr_description": {
+      "stage": "E7",
+      "type": "acompanhamento",
+      "path": "specs/002-resumo-tarefas-cli/notes/e7-pr-body.md"
     }
   },
   "notifications": [
@@ -594,7 +599,17 @@
       }
     },
     "E7": {
-      "status": "em_andamento"
+      "tests": 85,
+      "ci": "nao_configurada",
+      "status": "em_andamento",
+      "test_exit_code": 0,
+      "evidence": [
+        "git fetch origin0; git merge origin/main: already up to date",
+        "origin/main sem .github; CI nao configurada",
+        "Suite final orquestrador85testes0 em35.747s; compileall0; diffcheck0",
+        "20 evidencias notificacoes validadas por transporte e ID; nenhuma tarefa pendente"
+      ],
+      "build_exit_code": 0
     }
   },
   "tasks_done": [
@@ -607,7 +622,9 @@
     "T007"
   ],
   "correction_rounds": 0,
-  "blockers": [],
+  "blockers": [
+    "CI nao configurada; validacao E7 local com85testes0 e compileall0. Nao bloqueante conforme politica."
+  ],
   "human_checkpoints": {
     "specification_review": {
       "mensagem": "aprovado. nas próximas etapas não precisa pedir minha aprovação, só mantenha simples e toca até o final",
@@ -615,5 +632,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T21:16:34.8933625Z"
+  "updated_at": "2026-11-21T21:17:55.3752056Z"
 }
