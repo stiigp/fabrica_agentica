@@ -366,12 +366,15 @@ with ExitStack() as guards:
         ))
     importlib.import_module('tarefas')
     importlib.import_module('tarefas.cli')
-    sys.argv = ['tarefas', '--arquivo', sys.argv[1], '--help']
+    sys.argv = ['tarefas', *sys.argv[1:]]
     runpy.run_module('tarefas', run_name='__main__')
 """
-        resultado = self.executar("-c", script, str(self.arquivo))
-        self.assertEqual(resultado.returncode, 0, resultado.stderr)
-        self.assertTrue(resultado.stdout.startswith("uso: python -m tarefas"))
-        self.assertIn("mostrar esta ajuda e sair", resultado.stdout)
-        self.assertEqual(resultado.stderr, "")
-        self.assertEqual(list(self.diretorio.iterdir()), [])
+        for argumentos in (("--arquivo", str(self.arquivo), "--help"), ("resumo", "--help")):
+            with self.subTest(argumentos=argumentos):
+                resultado = self.executar("-c", script, *argumentos)
+                self.assertEqual(resultado.returncode, 0, resultado.stderr)
+                self.assertTrue(resultado.stdout.startswith("uso: python -m tarefas"))
+                self.assertIn("mostrar esta ajuda e sair", resultado.stdout)
+                self.assertIn("consultar contagens total, pendentes e concluídas", " ".join(resultado.stdout.split()))
+                self.assertEqual(resultado.stderr, "")
+                self.assertEqual(list(self.diretorio.iterdir()), [])

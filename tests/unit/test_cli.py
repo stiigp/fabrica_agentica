@@ -234,6 +234,23 @@ class CliSetupTests(unittest.TestCase):
         self.assertEqual(self.stderr.getvalue(), "")
         self.assertEqual(list(self.diretorio.iterdir()), [])
 
+    def test_ajudas_resumo_descrevem_contagens_sem_dados_ou_home(self):
+        with self.sem_acesso_a_dados():
+            cli = importlib.import_module("tarefas.cli")
+            with patch.object(cli, "carregar", side_effect=AssertionError("leitura indevida")), patch.object(
+                cli, "salvar", side_effect=AssertionError("gravação indevida")
+            ):
+                for argumentos in (["--help"], ["resumo", "--help"]):
+                    with self.subTest(argumentos=argumentos):
+                        self.stdout.seek(0)
+                        self.stdout.truncate()
+                        self.assertEqual(cli.main(argumentos), 0)
+                        ajuda = " ".join(self.stdout.getvalue().split())
+                        self.assertIn("resumo", ajuda)
+                        self.assertIn("consultar contagens total, pendentes e concluídas", ajuda)
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.assertEqual(list(self.diretorio.iterdir()), [])
+
     def test_sem_comando_nao_informa_sucesso_fr001(self):
         with self.sem_acesso_a_dados():
             cli = importlib.import_module("tarefas.cli")

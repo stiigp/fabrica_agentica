@@ -234,14 +234,14 @@
       "agente": "desenvolvedor",
       "artefato": "README.md",
       "tentativas_retomada": 0,
-      "resumo": null,
-      "status": "PENDENTE",
+      "resumo": "US3 ajuda e README concluidos",
+      "status": "ENVIADA",
       "etapa": "E4-US3",
-      "message_id": null,
-      "ts": null,
-      "channel_id": null,
-      "notificado_em": null,
-      "status_tarefa": null,
+      "message_id": "C0CKR9H7E77:1795295102.680229",
+      "ts": "1795295102.680229",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T18:05:00.3871872-03:00",
+      "status_tarefa": "DONE",
       "execucao_id": "c6a70e72-217a-4417-8d94-0d9a61fdfca9",
       "transport": "slack_bot_api",
       "feature": "002-resumo-tarefas-cli"
@@ -251,17 +251,51 @@
       "agente": "desenvolvedor",
       "artefato": "README.md",
       "tentativas_retomada": 0,
-      "resumo": null,
-      "status": "PENDENTE",
+      "resumo": "US3 ajuda e README concluidos",
+      "status": "ENVIADA",
       "etapa": "E4-US3",
-      "message_id": null,
+      "message_id": "1573806473367134313",
       "ts": null,
       "channel_id": null,
-      "notificado_em": null,
-      "status_tarefa": null,
+      "notificado_em": "2026-11-21T18:05:00.9327975-03:00",
+      "status_tarefa": "DONE",
       "execucao_id": "c6a70e72-217a-4417-8d94-0d9a61fdfca9",
       "transport": "discord_webhook",
       "feature": "002-resumo-tarefas-cli"
+    },
+    {
+      "status_tarefa": null,
+      "notificado_em": null,
+      "transport": "slack_bot_api",
+      "etapa": "E4-Polish",
+      "erro": null,
+      "tentativas_retomada": 0,
+      "resumo": null,
+      "ts": null,
+      "execucao_id": "2a77e3ff-13cc-46ae-bea3-4633d3ea2dec",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": null,
+      "status": "PENDENTE",
+      "message_id": null,
+      "agente": "desenvolvedor"
+    },
+    {
+      "status_tarefa": null,
+      "notificado_em": null,
+      "transport": "discord_webhook",
+      "etapa": "E4-Polish",
+      "erro": null,
+      "tentativas_retomada": 0,
+      "resumo": null,
+      "ts": null,
+      "execucao_id": "2a77e3ff-13cc-46ae-bea3-4633d3ea2dec",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": null,
+      "status": "PENDENTE",
+      "message_id": null,
+      "agente": "desenvolvedor"
     }
   ],
   "gates": {
@@ -382,9 +416,23 @@
             "T004"
           ],
           "tests": 78
+        },
+        "US3": {
+          "tasks": [
+            "T005",
+            "T006"
+          ],
+          "test_exit_code": 0,
+          "build_exit_code": 0,
+          "tests": 79,
+          "evidence": [
+            "README e testes lidos; so T005/T006 marcadas",
+            "Suite orquestrador79testes0 em20.062s; compileall0; diffcheck0; raiz sem controles"
+          ],
+          "status": "aprovado"
         }
       },
-      "current_phase": "US3",
+      "current_phase": "Polish",
       "devolucoes": 0
     }
   },
@@ -392,7 +440,9 @@
     "T001",
     "T002",
     "T003",
-    "T004"
+    "T004",
+    "T005",
+    "T006"
   ],
   "correction_rounds": 0,
   "blockers": [],
@@ -403,5 +453,5 @@
       "aprovado_em": "2026-11-21T20:31:00.9244027Z"
     }
   },
-  "updated_at": "2026-11-21T21:02:47.9500228Z"
+  "updated_at": "2026-11-21T21:06:01.2780704Z"
 }

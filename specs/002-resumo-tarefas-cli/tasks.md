@@ -44,8 +44,8 @@
 **Goal**: descobrir o comando e reproduzir um exemplo fictício.
 **Independent Test**: ajuda geral lista e descreve resumo; ajuda específica descreve a consulta; ambas saem com 0 sem I/O/home. Exemplo README resulta em 3/2/1 sem alteração na consulta.
 
-- [ ] T005 [US3] Conferir e completar descrição da consulta de contagens no parser de `tarefas/cli.py`, ampliando `tests/unit/test_cli.py` e `tests/integration/test_cli.py` para `--help` e `resumo --help`, código 0, stderr vazio e guards proibindo leitura, escrita e consulta a home; preservar comportamento de ajuda dos demais comandos (FR-007; SC-005). Depende de T003 e T004 para evitar edição simultânea dos mesmos arquivos.
-- [ ] T006 [P] [US3] Acrescentar a `README.md` exemplo reproduzível em diretório temporário com tarefas fictícias, `--arquivo` antes de `resumo`, três contagens esperadas 3/2/1 e indicação de somente leitura; reutilizar os comandos existentes de adicionar/concluir e conferir a sequência contra `specs/002-resumo-tarefas-cli/quickstart.md` (FR-008; SC-005). Depende de T002; pode ocorrer junto de T003, T004 ou T005.
+- [X] T005 [US3] Conferir e completar descrição da consulta de contagens no parser de `tarefas/cli.py`, ampliando `tests/unit/test_cli.py` e `tests/integration/test_cli.py` para `--help` e `resumo --help`, código 0, stderr vazio e guards proibindo leitura, escrita e consulta a home; preservar comportamento de ajuda dos demais comandos (FR-007; SC-005). Depende de T003 e T004 para evitar edição simultânea dos mesmos arquivos.
+- [X] T006 [P] [US3] Acrescentar a `README.md` exemplo reproduzível em diretório temporário com tarefas fictícias, `--arquivo` antes de `resumo`, três contagens esperadas 3/2/1 e indicação de somente leitura; reutilizar os comandos existentes de adicionar/concluir e conferir a sequência contra `specs/002-resumo-tarefas-cli/quickstart.md` (FR-008; SC-005). Depende de T002; pode ocorrer junto de T003, T004 ou T005.
 
 **Checkpoint**: orientação completa; reprodução automatizada independente do exemplo será conferida pelo QA na E6.
 

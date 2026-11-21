@@ -272,6 +272,33 @@ A listagem inicial informa `Nenhuma tarefa cadastrada.`; adicionar confirma `Tar
 
 O JSON preserva as tarefas entre execuções usando o mesmo arquivo. O parâmetro `--arquivo` seleciona dados independentes; sem ele, os dados ficam em `.tarefas/tarefas.json` no diretório pessoal. Use o caminho temporário acima para demonstrações. Listar um arquivo ausente não o cria; falhas de leitura ou gravação são informadas sem substituir dados por uma lista vazia.
 
+### Consultar um resumo
+
+Exemplo com dados fictícios em um novo diretório temporário:
+
+```powershell
+$env:PYTHONUTF8 = '1'
+$diretorioResumo = Join-Path ([IO.Path]::GetTempPath()) ('resumo-demo-' + [guid]::NewGuid().ToString('N'))
+$arquivoResumo = Join-Path $diretorioResumo 'tarefas.json'
+python -m tarefas --arquivo "$arquivoResumo" adicionar "Preparar relatório"
+python -m tarefas --arquivo "$arquivoResumo" adicionar "Revisar relatório"
+python -m tarefas --arquivo "$arquivoResumo" adicionar "Enviar relatório"
+python -m tarefas --arquivo "$arquivoResumo" concluir 3
+python -m tarefas --arquivo "$arquivoResumo" resumo
+```
+
+O resumo retorna código 0, stderr vazio e estas três linhas:
+
+```text
+Total: 3
+Pendentes: 2
+Concluídas: 1
+```
+
+A consulta é somente leitura: não altera os dados nem cria arquivo ou diretórios ausentes.
+Sem tarefas, apresenta as três contagens zero. Consulte `python -m tarefas resumo --help`
+para a ajuda do comando; `--arquivo CAMINHO` deve preceder `resumo`.
+
 Para verificar a aplicação:
 
 ```powershell
