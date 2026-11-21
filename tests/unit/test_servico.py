@@ -6,7 +6,29 @@ import unittest
 from unittest.mock import patch
 
 from tarefas.modelo import ErroValidacao, Tarefa
-from tarefas.servico import TarefaNaoEncontrada, adicionar, concluir
+from tarefas.servico import TarefaNaoEncontrada, adicionar, concluir, resumir
+
+
+class ResumoTests(unittest.TestCase):
+    def test_contagens_sem_io_ou_mutacao(self):
+        casos = (
+            ([], (0, 0, 0)),
+            ([Tarefa(8, "A", "concluida"), Tarefa(2, "B"), Tarefa(19, "C")], (3, 2, 1)),
+            ([Tarefa(9, "A"), Tarefa(3, "B")], (2, 2, 0)),
+            ([Tarefa(9, "A", "concluida"), Tarefa(3, "B", "concluida")], (2, 0, 2)),
+        )
+        for tarefas, esperado in casos:
+            with self.subTest(esperado=esperado):
+                antes = list(tarefas)
+                stdout, stderr = io.StringIO(), io.StringIO()
+                with patch("builtins.open", side_effect=AssertionError("I/O indevido")), patch(
+                    "pathlib.Path.home", side_effect=AssertionError("home indevido")
+                ), redirect_stdout(stdout), redirect_stderr(stderr):
+                    self.assertEqual(resumir(tarefas), esperado)
+                self.assertEqual(tarefas, antes)
+                self.assertTrue(all(atual is original for atual, original in zip(tarefas, antes)))
+                self.assertEqual(stdout.getvalue(), "")
+                self.assertEqual(stderr.getvalue(), "")
 
 
 class AdicaoTests(unittest.TestCase):

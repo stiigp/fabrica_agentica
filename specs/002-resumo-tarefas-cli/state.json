@@ -1,0 +1,641 @@
+{
+  "feature": "002-resumo-tarefas-cli",
+  "base_branch": "main",
+  "branch": "002-resumo-tarefas-cli",
+  "gh_path": "gh",
+  "pull_request": "https://github.com/stiigp/fabrica_agentica/pull/2",
+  "commands": {
+    "lint": null,
+    "test": "python -m unittest discover -s tests -t . -v",
+    "build": "python -m compileall -q tarefas tests"
+  },
+  "last_reviewed_commit": "7bb0cd73ca5b621182ccc0d2098f299cd587b793",
+  "stage": "AGUARDANDO_MERGE",
+  "artifacts": {
+    "requirements_checklist": {
+      "skill": "speckit-specify",
+      "stage": "E1",
+      "path": "specs/002-resumo-tarefas-cli/checklists/requirements.md"
+    },
+    "active_feature": {
+      "stage": "E1",
+      "local_only": true,
+      "path": ".specify/feature.json"
+    },
+    "specification": {
+      "skill": "speckit-specify",
+      "stage": "E1",
+      "path": "specs/002-resumo-tarefas-cli/spec.md"
+    },
+    "plan.md": {
+      "path": "specs/002-resumo-tarefas-cli/plan.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "research.md": {
+      "path": "specs/002-resumo-tarefas-cli/research.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "data-model.md": {
+      "path": "specs/002-resumo-tarefas-cli/data-model.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "quickstart.md": {
+      "path": "specs/002-resumo-tarefas-cli/quickstart.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "contracts/cli-resumo.md": {
+      "path": "specs/002-resumo-tarefas-cli/contracts/cli-resumo.md",
+      "skill": "speckit-plan",
+      "stage": "E2"
+    },
+    "tasks": {
+      "skill": "speckit-tasks",
+      "stage": "E3",
+      "path": "specs/002-resumo-tarefas-cli/tasks.md"
+    },
+    "review": {
+      "path": "specs/002-resumo-tarefas-cli/review-report.md",
+      "stage": "E5"
+    },
+    "qa": {
+      "path": "specs/002-resumo-tarefas-cli/qa-report.md",
+      "stage": "E6"
+    },
+    "pr_description": {
+      "stage": "E7",
+      "type": "acompanhamento",
+      "path": "specs/002-resumo-tarefas-cli/notes/e7-pr-body.md"
+    }
+  },
+  "notifications": [
+    {
+      "resumo": "Especificacao resumo concluida",
+      "ts": "1795294050.674369",
+      "agente": "analista_requisitos",
+      "feature": "002-resumo-tarefas-cli",
+      "status_tarefa": "HUMAN_REVIEW_REQUIRED",
+      "status": "ENVIADA",
+      "channel_id": "C0CKR9H7E77",
+      "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
+      "transport": "slack_bot_api",
+      "erro": null,
+      "notificado_em": "2026-11-21T17:47:28.3842076-03:00",
+      "artefato": "specs/002-resumo-tarefas-cli/spec.md",
+      "tentativas_retomada": 4,
+      "etapa": "E1",
+      "message_id": "C0CKR9H7E77:1795294050.674369"
+    },
+    {
+      "resumo": "Especificacao resumo concluida",
+      "ts": null,
+      "agente": "analista_requisitos",
+      "feature": "002-resumo-tarefas-cli",
+      "status_tarefa": "HUMAN_REVIEW_REQUIRED",
+      "status": "ENVIADA",
+      "channel_id": null,
+      "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
+      "transport": "discord_webhook",
+      "erro": null,
+      "notificado_em": "2026-11-21T17:29:01.7045715-03:00",
+      "artefato": "specs/002-resumo-tarefas-cli/spec.md",
+      "tentativas_retomada": 0,
+      "etapa": "E1",
+      "message_id": "1573797417038647368"
+    },
+    {
+      "tentativas_retomada": 0,
+      "artefato": "specs/002-resumo-tarefas-cli/plan.md",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "arquiteto",
+      "ts": "1795294303.537949",
+      "execucao_id": "50888f50-2553-4456-b996-53946b3f3135",
+      "status": "ENVIADA",
+      "transport": "slack_bot_api",
+      "channel_id": "C0CKR9H7E77",
+      "erro": null,
+      "message_id": "C0CKR9H7E77:1795294303.537949",
+      "status_tarefa": "DONE",
+      "etapa": "E2",
+      "resumo": "Plano minimo concluido",
+      "notificado_em": "2026-11-21T17:51:41.2706462-03:00"
+    },
+    {
+      "tentativas_retomada": 0,
+      "artefato": "specs/002-resumo-tarefas-cli/plan.md",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "arquiteto",
+      "ts": null,
+      "execucao_id": "50888f50-2553-4456-b996-53946b3f3135",
+      "status": "ENVIADA",
+      "transport": "discord_webhook",
+      "channel_id": null,
+      "erro": null,
+      "message_id": "1573803121216327934",
+      "status_tarefa": "DONE",
+      "etapa": "E2",
+      "resumo": "Plano minimo concluido",
+      "notificado_em": "2026-11-21T17:51:41.7329096-03:00"
+    },
+    {
+      "tentativas_retomada": 0,
+      "erro": null,
+      "agente": "criador_tarefas",
+      "ts": "1795294488.747379",
+      "status_tarefa": "DONE",
+      "feature": "002-resumo-tarefas-cli",
+      "status": "ENVIADA",
+      "transport": "slack_bot_api",
+      "message_id": "C0CKR9H7E77:1795294488.747379",
+      "etapa": "E3",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "resumo": "Sete tarefas concluidas",
+      "channel_id": "C0CKR9H7E77",
+      "execucao_id": "688caec5-712d-4238-8891-9e0e8ad62724",
+      "notificado_em": "2026-11-21T17:54:46.512124-03:00"
+    },
+    {
+      "tentativas_retomada": 0,
+      "erro": null,
+      "agente": "criador_tarefas",
+      "ts": null,
+      "status_tarefa": "DONE",
+      "feature": "002-resumo-tarefas-cli",
+      "status": "ENVIADA",
+      "transport": "discord_webhook",
+      "message_id": "1573803897859084429",
+      "etapa": "E3",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "resumo": "Sete tarefas concluidas",
+      "channel_id": null,
+      "execucao_id": "688caec5-712d-4238-8891-9e0e8ad62724",
+      "notificado_em": "2026-11-21T17:54:46.9329043-03:00"
+    },
+    {
+      "erro": null,
+      "etapa": "E4-US1",
+      "status": "ENVIADA",
+      "transport": "slack_bot_api",
+      "resumo": "US1 implementada e validada",
+      "status_tarefa": "DONE",
+      "tentativas_retomada": 0,
+      "message_id": "C0CKR9H7E77:1795294715.658149",
+      "artefato": "tarefas/servico.py",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T17:58:33.2904527-03:00",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "desenvolvedor",
+      "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
+      "ts": "1795294715.658149"
+    },
+    {
+      "erro": null,
+      "etapa": "E4-US1",
+      "status": "ENVIADA",
+      "transport": "discord_webhook",
+      "resumo": "US1 implementada e validada",
+      "status_tarefa": "DONE",
+      "tentativas_retomada": 0,
+      "message_id": "1573804849655717990",
+      "artefato": "tarefas/servico.py",
+      "channel_id": null,
+      "notificado_em": "2026-11-21T17:58:33.8749164-03:00",
+      "feature": "002-resumo-tarefas-cli",
+      "agente": "desenvolvedor",
+      "execucao_id": "5ef1ce61-f952-4190-bce4-c03d1304b2ae",
+      "ts": null
+    },
+    {
+      "transport": "slack_bot_api",
+      "channel_id": "C0CKR9H7E77",
+      "status_tarefa": "DONE",
+      "resumo": "US2 caminhos e erros validados",
+      "feature": "002-resumo-tarefas-cli",
+      "erro": null,
+      "status": "ENVIADA",
+      "notificado_em": "2026-11-21T18:01:46.2177714-03:00",
+      "message_id": "C0CKR9H7E77:1795294908.434419",
+      "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
+      "etapa": "E4-US2",
+      "ts": "1795294908.434419",
+      "agente": "desenvolvedor",
+      "artefato": "tests/integration/test_cli.py",
+      "tentativas_retomada": 0
+    },
+    {
+      "transport": "discord_webhook",
+      "channel_id": null,
+      "status_tarefa": "DONE",
+      "resumo": "US2 caminhos e erros validados",
+      "feature": "002-resumo-tarefas-cli",
+      "erro": null,
+      "status": "ENVIADA",
+      "notificado_em": "2026-11-21T18:01:46.6775187-03:00",
+      "message_id": "1573805658137043087",
+      "execucao_id": "33fdc429-255b-4c8d-90a6-974a9aaed0f7",
+      "etapa": "E4-US2",
+      "ts": null,
+      "agente": "desenvolvedor",
+      "artefato": "tests/integration/test_cli.py",
+      "tentativas_retomada": 0
+    },
+    {
+      "erro": null,
+      "agente": "desenvolvedor",
+      "artefato": "README.md",
+      "tentativas_retomada": 0,
+      "resumo": "US3 ajuda e README concluidos",
+      "status": "ENVIADA",
+      "etapa": "E4-US3",
+      "message_id": "C0CKR9H7E77:1795295102.680229",
+      "ts": "1795295102.680229",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T18:05:00.3871872-03:00",
+      "status_tarefa": "DONE",
+      "execucao_id": "c6a70e72-217a-4417-8d94-0d9a61fdfca9",
+      "transport": "slack_bot_api",
+      "feature": "002-resumo-tarefas-cli"
+    },
+    {
+      "erro": null,
+      "agente": "desenvolvedor",
+      "artefato": "README.md",
+      "tentativas_retomada": 0,
+      "resumo": "US3 ajuda e README concluidos",
+      "status": "ENVIADA",
+      "etapa": "E4-US3",
+      "message_id": "1573806473367134313",
+      "ts": null,
+      "channel_id": null,
+      "notificado_em": "2026-11-21T18:05:00.9327975-03:00",
+      "status_tarefa": "DONE",
+      "execucao_id": "c6a70e72-217a-4417-8d94-0d9a61fdfca9",
+      "transport": "discord_webhook",
+      "feature": "002-resumo-tarefas-cli"
+    },
+    {
+      "status_tarefa": "DONE",
+      "notificado_em": "2026-11-21T18:07:26.5564478-03:00",
+      "transport": "slack_bot_api",
+      "etapa": "E4-Polish",
+      "erro": null,
+      "tentativas_retomada": 0,
+      "resumo": "Polish quickstart validado",
+      "ts": "1795295248.753419",
+      "execucao_id": "2a77e3ff-13cc-46ae-bea3-4633d3ea2dec",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": "C0CKR9H7E77",
+      "status": "ENVIADA",
+      "message_id": "C0CKR9H7E77:1795295248.753419",
+      "agente": "desenvolvedor"
+    },
+    {
+      "status_tarefa": "DONE",
+      "notificado_em": "2026-11-21T18:07:27.0030986-03:00",
+      "transport": "discord_webhook",
+      "etapa": "E4-Polish",
+      "erro": null,
+      "tentativas_retomada": 0,
+      "resumo": "Polish quickstart validado",
+      "ts": null,
+      "execucao_id": "2a77e3ff-13cc-46ae-bea3-4633d3ea2dec",
+      "artefato": "specs/002-resumo-tarefas-cli/tasks.md",
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": null,
+      "status": "ENVIADA",
+      "message_id": "1573807085555290323",
+      "agente": "desenvolvedor"
+    },
+    {
+      "message_id": "C0CKR9H7E77:1795295417.160979",
+      "transport": "slack_bot_api",
+      "erro": null,
+      "ts": "1795295417.160979",
+      "status": "ENVIADA",
+      "tentativas_retomada": 0,
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T18:10:14.9655339-03:00",
+      "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
+      "resumo": "Revisao aprovada sem apontamentos",
+      "etapa": "E5",
+      "status_tarefa": "DONE",
+      "agente": "revisor_codigo",
+      "execucao_id": "5d4aa2ee-c2ae-444d-a44c-eccd47221a02"
+    },
+    {
+      "message_id": "1573807792001916969",
+      "transport": "discord_webhook",
+      "erro": null,
+      "ts": null,
+      "status": "ENVIADA",
+      "tentativas_retomada": 0,
+      "feature": "002-resumo-tarefas-cli",
+      "channel_id": null,
+      "notificado_em": "2026-11-21T18:10:15.3907795-03:00",
+      "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
+      "resumo": "Revisao aprovada sem apontamentos",
+      "etapa": "E5",
+      "status_tarefa": "DONE",
+      "agente": "revisor_codigo",
+      "execucao_id": "5d4aa2ee-c2ae-444d-a44c-eccd47221a02"
+    },
+    {
+      "tentativas_retomada": 0,
+      "etapa": "E6",
+      "ts": "1795295643.464539",
+      "erro": null,
+      "agente": "qa",
+      "execucao_id": "5d1245d9-f299-4d51-a897-2438300db1fe",
+      "feature": "002-resumo-tarefas-cli",
+      "artefato": "specs/002-resumo-tarefas-cli/qa-report.md",
+      "channel_id": "C0CKR9H7E77",
+      "message_id": "C0CKR9H7E77:1795295643.464539",
+      "resumo": "QA aprovado sem defeitos",
+      "transport": "slack_bot_api",
+      "status": "ENVIADA",
+      "notificado_em": "2026-11-21T18:14:01.2959612-03:00",
+      "status_tarefa": "DONE"
+    },
+    {
+      "tentativas_retomada": 0,
+      "etapa": "E6",
+      "ts": null,
+      "erro": null,
+      "agente": "qa",
+      "execucao_id": "5d1245d9-f299-4d51-a897-2438300db1fe",
+      "feature": "002-resumo-tarefas-cli",
+      "artefato": "specs/002-resumo-tarefas-cli/qa-report.md",
+      "channel_id": null,
+      "message_id": "1573808741206335599",
+      "resumo": "QA aprovado sem defeitos",
+      "transport": "discord_webhook",
+      "status": "ENVIADA",
+      "notificado_em": "2026-11-21T18:14:01.7100007-03:00",
+      "status_tarefa": "DONE"
+    },
+    {
+      "agente": "revisor_codigo",
+      "resumo": "Testes QA aprovados sem apontamentos",
+      "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
+      "execucao_id": "836e9568-8b52-4ed8-8802-2c58017085ef",
+      "erro": null,
+      "feature": "002-resumo-tarefas-cli",
+      "tentativas_retomada": 0,
+      "status_tarefa": "DONE",
+      "transport": "slack_bot_api",
+      "status": "ENVIADA",
+      "message_id": "C0CKR9H7E77:1795295768.293469",
+      "etapa": "E6-revisao-testes-QA",
+      "ts": "1795295768.293469",
+      "channel_id": "C0CKR9H7E77",
+      "notificado_em": "2026-11-21T18:16:06.1281569-03:00"
+    },
+    {
+      "agente": "revisor_codigo",
+      "resumo": "Testes QA aprovados sem apontamentos",
+      "artefato": "specs/002-resumo-tarefas-cli/review-report.md",
+      "execucao_id": "836e9568-8b52-4ed8-8802-2c58017085ef",
+      "erro": null,
+      "feature": "002-resumo-tarefas-cli",
+      "tentativas_retomada": 0,
+      "status_tarefa": "DONE",
+      "transport": "discord_webhook",
+      "status": "ENVIADA",
+      "message_id": "1573809264437493934",
+      "etapa": "E6-revisao-testes-QA",
+      "ts": null,
+      "channel_id": null,
+      "notificado_em": "2026-11-21T18:16:06.5541686-03:00"
+    }
+  ],
+  "gates": {
+    "E0": {
+      "base_commit": "6af78fc",
+      "status": "aprovado",
+      "evidence": [
+        "main limpa e identica origin/main apos fetch",
+        "gh autenticado; origin configurado; constituicao 1.0.0 preenchida",
+        "PR anterior #1 MERGED confirmado; estado reconciliado nesta branch"
+      ]
+    },
+    "E1": {
+      "status": "aprovado",
+      "evidence": [
+        "Spec e checklist lidos integralmente pelo orquestrador",
+        "Ponteiro ativo corresponde; branch criada de main",
+        "git diff --check sem erros; raiz sem controles indevidos"
+      ],
+      "checklist_total": 16,
+      "checklist_checked": 16,
+      "agent": "analista_requisitos",
+      "functional_requirements": 8,
+      "success_criteria": 5,
+      "stories": 3,
+      "assumptions": [
+        "Tres linhas rotuladas na ordem Total, Pendentes, Concluidas",
+        "Reusar comportamento existente; sem opcoes adicionais"
+      ]
+    },
+    "notification_recovery": {
+      "agent": "analista_requisitos",
+      "exit_code": 0,
+      "specification_approval_preserved": true,
+      "transport": "slack_bot_api",
+      "status": "aprovado",
+      "execucao_id": "44bf5ed1-8929-4e49-8675-c0d36e6883d9",
+      "resume_stage": "E2",
+      "human_retry_authorization": "meu colega já tinha colocado mas agora eu coloquei de novo por aqui, tenta de novo"
+    },
+    "E2": {
+      "assumptions": [
+        "Funcao pura retorna tupla; sem nova classe/dependencia",
+        "Reusar carregar e caminho; retorno antes salvar",
+        "QA tests/acceptance separado; lint nao aplicavel"
+      ],
+      "agent": "arquiteto",
+      "status": "aprovado",
+      "constitution_check": "PASS pre e pos",
+      "evidence": [
+        "Cinco artefatos lidos; branch e ponteiro corretos; diff check 0; raiz sem controles"
+      ],
+      "devolucoes": 0
+    },
+    "E3": {
+      "status": "aprovado",
+      "agent": "criador_tarefas",
+      "evidence": [
+        "tasks.md lido integralmente; US e FR/SC rastreados; nenhuma tarefa E4 exclusiva QA",
+        "Formato e dependencias corretos; diff check 0; raiz sem controle indevido"
+      ],
+      "total_tasks": 7,
+      "devolucoes": 0
+    },
+    "E3.5": {
+      "coverage_percent": 100,
+      "high_issues": 0,
+      "evidence": [
+        "check-prerequisites -Json -RequireSpec -RequireTasks -IncludeTasks 0",
+        "Spec/plano/tasks/data-model/constituicao conferidos sem inconsistencias; hooks ausentes",
+        "Campos Tarefa id/descricao/status, JSON schema_version/tarefas e tupla Resumo cobertos T001/T002; nenhuma nova restricao"
+      ],
+      "unmapped_tasks": [],
+      "requirements_count": 13,
+      "status": "aprovado",
+      "skill": "speckit-analyze",
+      "critical_issues": 0,
+      "duplication_count": 0,
+      "ambiguity_count": 0,
+      "tasks_count": 7
+    },
+    "E4": {
+      "status": "aprovado",
+      "agent": "desenvolvedor",
+      "phases": {
+        "Setup": {
+          "reason": "sem tarefas",
+          "status": "nao_aplicavel"
+        },
+        "Foundational": {
+          "reason": "sem tarefas",
+          "status": "nao_aplicavel"
+        },
+        "US1": {
+          "build_exit_code": 0,
+          "test_exit_code": 0,
+          "status": "aprovado",
+          "evidence": [
+            "Codigo/testes/diff lidos; somente T001/T002 marcadas",
+            "Suite orquestrador 72 testes OK em19.812s; compileall0; diffcheck0; raiz limpa"
+          ],
+          "tasks": [
+            "T001",
+            "T002"
+          ],
+          "tests": 72
+        },
+        "US2": {
+          "build_exit_code": 0,
+          "test_exit_code": 0,
+          "status": "aprovado",
+          "evidence": [
+            "Diff testes lido; producao preservada; so T003/T004 marcadas",
+            "Suite orquestrador78testes0 em24.103s; compileall0; diffcheck0; raiz sem controle"
+          ],
+          "tasks": [
+            "T003",
+            "T004"
+          ],
+          "tests": 78
+        },
+        "US3": {
+          "tasks": [
+            "T005",
+            "T006"
+          ],
+          "test_exit_code": 0,
+          "build_exit_code": 0,
+          "tests": 79,
+          "evidence": [
+            "README e testes lidos; so T005/T006 marcadas",
+            "Suite orquestrador79testes0 em20.062s; compileall0; diffcheck0; raiz sem controles"
+          ],
+          "status": "aprovado"
+        },
+        "Polish": {
+          "test_exit_code": 0,
+          "status": "aprovado",
+          "tasks": [
+            "T007"
+          ],
+          "evidence": [
+            "So marcacao T007 alterada; nenhuma tarefa pendente",
+            "Suite orquestrador79testes0 em20.759s; compileall0; diffcheck0; raiz sem controles",
+            "Desenvolvedor executou quickstart com temporarios/hashes/erros:0"
+          ],
+          "tests": 79,
+          "build_exit_code": 0
+        }
+      },
+      "current_phase": null,
+      "devolucoes": 0
+    },
+    "E5": {
+      "status": "aprovado",
+      "parecer": "aprovado",
+      "agent": "revisor_codigo",
+      "devolucoes": 0,
+      "findings": [],
+      "evidence": [
+        "Relatorio lido; sem apontamentos ou bloqueantes; diffcheck0 e raiz correta",
+        "Revisor executou79testes0/compileall0; produto inalterado desde validacao orquestrador"
+      ]
+    },
+    "E6": {
+      "acceptance_tests": 6,
+      "tests": 85,
+      "evidence": [
+        "Relatorio e testes lidos; suite orquestrador85testes0 em23.976s; aceite6testes0 em5.901s; compileall0",
+        "Todos FR/SC/US mapeados; README real executado; diffcheck0 e raiz sem controles"
+      ],
+      "parecer": "aprovado",
+      "status": "aprovado",
+      "agent": "qa",
+      "defects": [],
+      "qa_test_files": [
+        "tests/acceptance/__init__.py",
+        "tests/acceptance/test_resumo.py"
+      ],
+      "devolucoes": 0,
+      "qa_tests_review": {
+        "findings": [],
+        "status": "aprovado",
+        "agent": "revisor_codigo",
+        "evidence": "Secao E6 review-report lida; revisao estatica dos dois arquivos sem apontamentos"
+      }
+    },
+    "E7": {
+      "tests": 85,
+      "ci": "nao_configurada",
+      "status": "aprovado_validacao_local",
+      "test_exit_code": 0,
+      "evidence": [
+        "git fetch origin0; git merge origin/main: already up to date",
+        "origin/main sem .github; CI nao configurada",
+        "Suite final orquestrador85testes0 em35.747s; compileall0; diffcheck0",
+        "20 evidencias notificacoes validadas por transporte e ID; nenhuma tarefa pendente",
+        "PR #2 OPEN main <- 002-resumo-tarefas-cli, mergeable MERGEABLE",
+        "gh pr checks: no checks reported, exit1 por CI ausente; statusCheckRollup vazio"
+      ],
+      "build_exit_code": 0
+    }
+  },
+  "tasks_done": [
+    "T001",
+    "T002",
+    "T003",
+    "T004",
+    "T005",
+    "T006",
+    "T007"
+  ],
+  "correction_rounds": 0,
+  "blockers": [
+    "CI nao configurada; validacao E7 local com85testes0 e compileall0. Nao bloqueante conforme politica."
+  ],
+  "human_checkpoints": {
+    "specification_review": {
+      "mensagem": "aprovado. nas próximas etapas não precisa pedir minha aprovação, só mantenha simples e toca até o final",
+      "status": "aprovado",
+      "aprovado_em": "2026-11-21T20:31:00.9244027Z"
+    },
+    "merge_approval": {
+      "status": "pendente"
+    }
+  },
+  "updated_at": "2026-11-21T21:18:34.9347768Z"
+}

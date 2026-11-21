@@ -51,6 +51,48 @@ class CliOperacoesTests(unittest.TestCase):
         self.carregar.assert_called_once_with(self.arquivo)
         self.salvar.assert_not_called()
 
+    def test_resumo_contagens_sem_salvar_ou_mutar(self):
+        casos = (
+            (self.tarefas, "Total: 3\nPendentes: 2\nConcluídas: 1\n"),
+            ([], "Total: 0\nPendentes: 0\nConcluídas: 0\n"),
+            ([Tarefa(9, "A")], "Total: 1\nPendentes: 1\nConcluídas: 0\n"),
+            ([Tarefa(4, "B", "concluida")], "Total: 1\nPendentes: 0\nConcluídas: 1\n"),
+        )
+        self.salvar.side_effect = AssertionError("resumo não pode salvar")
+        for tarefas, esperado in casos:
+            with self.subTest(esperado=esperado):
+                antes = list(tarefas)
+                self.carregar.return_value = tarefas
+                self.carregar.reset_mock()
+                self.assertEqual(self.executar("resumo"), 0)
+                self.assertEqual(self.stdout.getvalue(), esperado)
+                self.assertEqual(self.stderr.getvalue(), "")
+                self.carregar.assert_called_once_with(self.arquivo)
+                self.salvar.assert_not_called()
+                self.assertEqual(tarefas, antes)
+
+    def test_resumo_padrao_resolve_home_ficticio_sem_salvar(self):
+        home = self.arquivo.parent / "home-ficticio"
+        with patch("pathlib.Path.home", return_value=home) as obter, redirect_stdout(
+            self.stdout
+        ), redirect_stderr(self.stderr):
+            codigo = self.cli.main(["resumo"])
+        self.assertEqual(codigo, 0)
+        self.assertEqual(self.stdout.getvalue(), "Total: 3\nPendentes: 2\nConcluídas: 1\n")
+        self.assertEqual(self.stderr.getvalue(), "")
+        obter.assert_called_once_with()
+        self.carregar.assert_called_once_with(home / ".tarefas" / "tarefas.json")
+        self.salvar.assert_not_called()
+
+    def test_resumo_falhas_de_leitura_sem_contagens_ou_gravacao(self):
+        for erro in (PermissionError("falha fictícia"), ErroLeitura("dados inválidos")):
+            with self.subTest(erro=type(erro).__name__):
+                self.carregar.side_effect = erro
+                self.assertEqual(self.executar("resumo"), 1)
+                self.assertEqual(self.stdout.getvalue(), "")
+                self.assertEqual(self.stderr.getvalue(), "Erro: não foi possível ler os dados locais.\n")
+                self.salvar.assert_not_called()
+
     def test_listar_ordenado_todos_campos_escape_reversivel_sem_mutacao_fr005(self):
         antes = list(self.tarefas)
         self.assertEqual(self.executar("listar"), 0)
@@ -189,6 +231,23 @@ class CliSetupTests(unittest.TestCase):
                         self.assertIn(texto, ajuda)
                     self.assertNotIn("usage:", ajuda)
                     self.assertNotIn("options:", ajuda)
+        self.assertEqual(self.stderr.getvalue(), "")
+        self.assertEqual(list(self.diretorio.iterdir()), [])
+
+    def test_ajudas_resumo_descrevem_contagens_sem_dados_ou_home(self):
+        with self.sem_acesso_a_dados():
+            cli = importlib.import_module("tarefas.cli")
+            with patch.object(cli, "carregar", side_effect=AssertionError("leitura indevida")), patch.object(
+                cli, "salvar", side_effect=AssertionError("gravação indevida")
+            ):
+                for argumentos in (["--help"], ["resumo", "--help"]):
+                    with self.subTest(argumentos=argumentos):
+                        self.stdout.seek(0)
+                        self.stdout.truncate()
+                        self.assertEqual(cli.main(argumentos), 0)
+                        ajuda = " ".join(self.stdout.getvalue().split())
+                        self.assertIn("resumo", ajuda)
+                        self.assertIn("consultar contagens total, pendentes e concluídas", ajuda)
         self.assertEqual(self.stderr.getvalue(), "")
         self.assertEqual(list(self.diretorio.iterdir()), [])
 

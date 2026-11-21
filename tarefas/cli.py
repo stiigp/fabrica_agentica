@@ -8,7 +8,7 @@ import sys
 
 from .modelo import ErroValidacao, validar_descricao
 from .armazenamento import ErroGravacao, ErroLeitura, carregar, salvar
-from .servico import TarefaNaoEncontrada, adicionar, concluir
+from .servico import TarefaNaoEncontrada, adicionar, concluir, resumir
 
 
 class _Parser(argparse.ArgumentParser):
@@ -47,6 +47,7 @@ def _criar_parser():
     for nome, descricao in (
         ("adicionar", "adicionar uma tarefa com descrição obrigatória"),
         ("listar", "listar identificador, descrição e status das tarefas"),
+        ("resumo", "consultar contagens total, pendentes e concluídas das tarefas"),
         ("concluir", "marcar uma tarefa como concluída pelo identificador"),
     ):
         subparser = comandos.add_parser(
@@ -98,6 +99,10 @@ def main(argv=None) -> int:
     except (OSError, RuntimeError, ErroLeitura):
         print("Erro: não foi possível ler os dados locais.", file=sys.stderr)
         return 1
+    if argumentos.comando == "resumo":
+        total, pendentes, concluidas = resumir(tarefas)
+        print(f"Total: {total}\nPendentes: {pendentes}\nConcluídas: {concluidas}")
+        return 0
     if argumentos.comando == "listar":
         if not tarefas:
             print("Nenhuma tarefa cadastrada.")

@@ -58,6 +58,105 @@ class CliProcessoTests(unittest.TestCase):
         )
         return documento
 
+    def test_resumo_contagens_repetidas_preservam_bytes(self):
+        misto = self.preparar_us2()["tarefas"]
+        casos = (
+            (misto, "Total: 3\nPendentes: 2\nConcluídas: 1\n"),
+            ([], "Total: 0\nPendentes: 0\nConcluídas: 0\n"),
+            ([item for item in misto if item["status"] == "pendente"],
+             "Total: 2\nPendentes: 2\nConcluídas: 0\n"),
+            ([item for item in misto if item["status"] == "concluida"],
+             "Total: 1\nPendentes: 0\nConcluídas: 1\n"),
+        )
+        for tarefas, esperado in casos:
+            with self.subTest(esperado=esperado):
+                self.arquivo.write_text(
+                    json.dumps({"schema_version": 1, "tarefas": tarefas},
+                               ensure_ascii=False, indent=3) + "\n \t", encoding="utf-8"
+                )
+                antes = self.arquivo.read_bytes()
+                for _ in range(2):
+                    self.conferir_sucesso(self.executar_cli("resumo"), esperado)
+                    self.assertEqual(self.arquivo.read_bytes(), antes)
+                self.assertEqual(list(self.diretorio.iterdir()), [self.arquivo])
+
+    def test_resumo_origens_explicitas_relativa_e_padrao_independentes(self):
+        self.preparar_us2()
+        outro = self.diretorio / "outro.json"
+        outro.write_text('{"schema_version":1,"tarefas":[]}', encoding="utf-8")
+        padrao = Path(self.ambiente["USERPROFILE"]) / ".tarefas" / "tarefas.json"
+        padrao.parent.mkdir(parents=True)
+        padrao.write_text(json.dumps({"schema_version": 1, "tarefas": [
+            {"id": 10, "descricao": "Fictícia", "status": "concluida"}
+        ]}), encoding="utf-8")
+        arquivos = (self.arquivo, outro, padrao)
+        antes = {arquivo: arquivo.read_bytes() for arquivo in arquivos}
+        arvore = sorted(str(item.relative_to(self.diretorio)) for item in self.diretorio.rglob("*"))
+        for caminho, esperado in (
+            (self.arquivo, "Total: 3\nPendentes: 2\nConcluídas: 1\n"),
+            (os.path.relpath(self.arquivo, RAIZ), "Total: 3\nPendentes: 2\nConcluídas: 1\n"),
+            (outro, "Total: 0\nPendentes: 0\nConcluídas: 0\n"),
+        ):
+            with self.subTest(caminho=caminho):
+                self.conferir_sucesso(self.executar_cli("resumo", arquivo=caminho), esperado)
+        self.conferir_sucesso(self.executar("-m", "tarefas", "resumo"),
+                             "Total: 1\nPendentes: 0\nConcluídas: 1\n")
+        self.assertEqual({arquivo: arquivo.read_bytes() for arquivo in arquivos}, antes)
+        self.assertEqual(sorted(str(item.relative_to(self.diretorio)) for item in self.diretorio.rglob("*")), arvore)
+
+    def test_resumo_ausencia_nao_cria_arquivo_ou_pais(self):
+        for caminho in (self.arquivo, self.diretorio / "ausente" / "pais" / "tarefas.json"):
+            with self.subTest(caminho=caminho):
+                self.conferir_sucesso(self.executar_cli("resumo", arquivo=caminho),
+                                     "Total: 0\nPendentes: 0\nConcluídas: 0\n")
+                self.assertEqual(list(self.diretorio.iterdir()), [])
+        self.conferir_sucesso(self.executar("-m", "tarefas", "resumo"),
+                             "Total: 0\nPendentes: 0\nConcluídas: 0\n")
+        self.assertEqual(list(self.diretorio.iterdir()), [])
+
+    def conferir_erro_resumo(self, caminho):
+        resultado = self.executar_cli("resumo", arquivo=caminho)
+        self.assertEqual(resultado.returncode, 1)
+        self.assertEqual(resultado.stdout, "")
+        self.assertEqual(resultado.stderr, "Erro: não foi possível ler os dados locais.\n")
+
+    def test_resumo_documentos_invalidos_preservados_sem_contagem_parcial(self):
+        valido = {"id": 4, "descricao": "Fictícia", "status": "pendente"}
+        documentos = [
+            {"schema_version": 9, "tarefas": []},
+            {"schema_version": True, "tarefas": []},
+            {"schema_version": 1, "tarefas": {}},
+            {"schema_version": 1, "tarefas": [valido, None]},
+            {"schema_version": 1, "tarefas": [valido, {"id": 5}]},
+            {"schema_version": 1, "tarefas": [valido, {**valido, "id": 5, "status": "invalido"}]},
+            {"schema_version": 1, "tarefas": [valido, {**valido, "id": 5, "descricao": " "}]},
+            {"schema_version": 1, "tarefas": [valido, {**valido, "id": True}]},
+            {"schema_version": 1, "tarefas": [valido, valido]},
+        ]
+        conteudos = [b"", b"{invalido", b'{"schema_version":1,"schema_version":1,"tarefas":[]}',
+                     b'{"schema_version":1,"tarefas":[{"id":1,"id":2,"descricao":"A","status":"pendente"}]}']
+        conteudos.extend(json.dumps(documento).encode("utf-8") for documento in documentos)
+        for conteudo in conteudos:
+            with self.subTest(conteudo=conteudo):
+                self.arquivo.write_bytes(conteudo)
+                self.conferir_erro_resumo(self.arquivo)
+                self.assertEqual(self.arquivo.read_bytes(), conteudo)
+                self.assertEqual(list(self.diretorio.iterdir()), [self.arquivo])
+
+    def test_resumo_destino_diretorio_e_ancestral_arquivo_preservados(self):
+        self.arquivo.mkdir()
+        marcador = self.arquivo / "marcador.txt"
+        marcador.write_bytes(b"preservar")
+        ancestral = self.diretorio / "ancestral.txt"
+        ancestral.write_bytes(b"ancestral ficticio")
+        antes = sorted(str(item.relative_to(self.diretorio)) for item in self.diretorio.rglob("*"))
+        for caminho in (self.arquivo, ancestral / "filho" / "tarefas.json"):
+            with self.subTest(caminho=caminho):
+                self.conferir_erro_resumo(caminho)
+                self.assertEqual(marcador.read_bytes(), b"preservar")
+                self.assertEqual(ancestral.read_bytes(), b"ancestral ficticio")
+                self.assertEqual(sorted(str(item.relative_to(self.diretorio)) for item in self.diretorio.rglob("*")), antes)
+
     def test_us2_muda_so_um_status_persiste_e_repete_sem_alteracao_sc002(self):
         inicial = self.preparar_us2()
         self.conferir_sucesso(self.executar_cli("concluir", "4"), "Tarefa 4 concluída.\n")
@@ -267,12 +366,15 @@ with ExitStack() as guards:
         ))
     importlib.import_module('tarefas')
     importlib.import_module('tarefas.cli')
-    sys.argv = ['tarefas', '--arquivo', sys.argv[1], '--help']
+    sys.argv = ['tarefas', *sys.argv[1:]]
     runpy.run_module('tarefas', run_name='__main__')
 """
-        resultado = self.executar("-c", script, str(self.arquivo))
-        self.assertEqual(resultado.returncode, 0, resultado.stderr)
-        self.assertTrue(resultado.stdout.startswith("uso: python -m tarefas"))
-        self.assertIn("mostrar esta ajuda e sair", resultado.stdout)
-        self.assertEqual(resultado.stderr, "")
-        self.assertEqual(list(self.diretorio.iterdir()), [])
+        for argumentos in (("--arquivo", str(self.arquivo), "--help"), ("resumo", "--help")):
+            with self.subTest(argumentos=argumentos):
+                resultado = self.executar("-c", script, *argumentos)
+                self.assertEqual(resultado.returncode, 0, resultado.stderr)
+                self.assertTrue(resultado.stdout.startswith("uso: python -m tarefas"))
+                self.assertIn("mostrar esta ajuda e sair", resultado.stdout)
+                self.assertIn("consultar contagens total, pendentes e concluídas", " ".join(resultado.stdout.split()))
+                self.assertEqual(resultado.stderr, "")
+                self.assertEqual(list(self.diretorio.iterdir()), [])
