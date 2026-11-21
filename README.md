@@ -159,9 +159,9 @@ e continue da primeira etapa pendente.
 
 Pedidos para explicar ou adaptar a própria fábrica não iniciam esse fluxo.
 
-## Avisos de finalizacao no Slack
+## Avisos de finalizacao no Slack e no Discord
 
-Cada especialista envia seu proprio aviso ao encerrar um acionamento, incluindo fases de implementacao, correcoes, bloqueios e especificacoes aguardando revisao humana. `scripts/notificar-slack.ps1` usa a Web API do Slack diretamente; nao e necessario instalar o Slack CLI. Um unico bot atende aos seis papeis, identificados no texto da mensagem. Os avisos nao substituem a aprovacao da spec nem o merge humano.
+Cada especialista envia seu proprio aviso aos dois servicos ao encerrar um acionamento, incluindo fases de implementacao, correcoes, bloqueios e especificacoes aguardando revisao humana. Execute uma unica vez `scripts/notificar-fabrica.ps1`: ele chama `scripts/notificar-slack.ps1` e `scripts/notificar-discord.ps1` com o mesmo `ExecucaoId` e resultado, tentando ambos mesmo se um falhar. As confirmacoes sao separadas por transporte. Um unico bot Slack e um unico webhook Discord atendem aos seis papeis. Os avisos nao substituem a aprovacao da spec nem o merge humano.
 
 ### Preparar o app e o canal
 
@@ -182,7 +182,25 @@ O configurador solicita o token com entrada oculta e depois o ID do canal. Salva
 
 O notificador procura primeiro as variaveis do processo e, no Windows, consulta tambem as persistidas no usuario. Ele nao carrega `.env` e nao precisa de Client Secret ou Signing Secret. Para configurar apenas o PowerShell atual, use `configurar-slack.ps1 -SomenteSessao`; nessa opcao, um Codex ja aberto nao recebe essas variaveis. Se voce substituir as variaveis persistidas e um processo ainda tiver valores antigos, reinicie esse processo para herdar a configuracao nova. Inicie uma nova sessao do Codex antes de usar os TOMLs atualizados.
 
-### Testar uma mensagem real
+### Configurar o Discord
+
+O Discord usa `DISCORD_WEBHOOK_URL`, consultada no processo ou no ambiente do usuario Windows, assim como na integracao anterior. Se ela ja esta salva, mantenha esse valor. Para configurar ou substituir o webhook localmente:
+
+```powershell
+$urlSegura = Read-Host 'Cole a URL do webhook Discord' -AsSecureString
+try {
+    $url = ([Net.NetworkCredential]::new('', $urlSegura)).Password
+    [Environment]::SetEnvironmentVariable('DISCORD_WEBHOOK_URL', $url, 'User')
+    $env:DISCORD_WEBHOOK_URL = $url
+} finally {
+    $urlSegura.Dispose()
+    Remove-Variable url, urlSegura
+}
+```
+
+Nunca grave essa URL no projeto ou no chat. Slack usa `SLACK_BOT_TOKEN` e `SLACK_CHANNEL_ID`; Discord usa `DISCORD_WEBHOOK_URL`. Ambos sao obrigatorios na execucao normal da fabrica.
+
+### Testar uma mensagem real nos dois servicos
 
 Depois de configurar, na raiz do repositorio:
 
@@ -190,20 +208,20 @@ Depois de configurar, na raiz do repositorio:
 $aviso = @{
     Agente = 'teste_manual'
     Feature = 'configuracao-da-fabrica'
-    Etapa = 'validacao-do-slack'
+    Etapa = 'validacao-dos-dois-servicos'
     ExecucaoId = [guid]::NewGuid().ToString('N')
     Status = 'TESTE'
     Resumo = 'Teste manual de notificacao; nao representa uma etapa de subagente.'
-    Artefato = 'scripts/notificar-slack.ps1'
+    Artefato = 'scripts/notificar-fabrica.ps1'
 }
-& .\scripts\notificar-slack.ps1 @aviso
+& .\scripts\notificar-fabrica.ps1 @aviso
 ```
 
-O script so confirma `NOTIFICACAO: ENVIADA` quando o Slack retorna `ok=true`, o canal esperado e `ts`. A saida inclui `MESSAGE_ID` no formato `canal:ts`, `SLACK_CHANNEL_ID`, `SLACK_TS`, `EXECUCAO_ID` e `NOTIFICACAO_EM`. `ts` e preservado como texto. HTTP 200 com `ok=false` e falha; erros como `missing_scope`, `not_in_channel`, `invalid_auth` e `channel_not_found` incluem orientacao sem revelar o token. Mencoes e previews de links ficam desativados.
+O bloco `TRANSPORTE: slack_bot_api` so confirma envio com `ok=true`, o canal esperado e `ts`, preservado como texto; o identificador e `canal:ts`. O bloco `TRANSPORTE: discord_webhook` so confirma com o ID numerico retornado por `wait=true`. Ambos incluem `EXECUCAO_ID` e `NOTIFICACAO_EM`. HTTP 200 com `ok=false` no Slack e falha. Os adaptadores preservam a protecao contra mencoes e vazamento de credenciais.
 
-Nao ha repeticao automatica. Depois de timeout ou resposta incompleta, confira o canal pelo `ExecucaoId` antes de reenviar, pois a mensagem pode ter sido publicada. A rede continua sujeita as permissoes reais da sessao; se a sandbox bloquear a conexao, use apenas o mecanismo de aprovacao permitido pelo ambiente.
+Nao ha repeticao automatica. Se um servico falhar, o outro ainda e tentado e seu sucesso e preservado. O envio conjunto termina com erro se algum transporte ficou pendente. Depois de timeout ou resposta incompleta, confira somente o canal afetado pelo `ExecucaoId` antes de reenviar. Para retomar apenas o pendente, use o mesmo `$aviso` e `& .\scripts\notificar-fabrica.ps1 @aviso -Transportes discord` (ou `slack`). Nao repita o comando padrao para resolver uma falha parcial. A rede continua sujeita as permissoes reais da sessao.
 
-Os seis TOMLs exigem que o proprio especialista envie o aviso antes do bloco final. O orquestrador fornece um ID unico a cada acionamento, confere a evidencia e registra `notifications` no `state.json` da feature, incluindo transporte, canal e `ts`. Uma falha de envio nao reexecuta a implementacao. Registros antigos de outros transportes sao preservados como historico. O Checkpoint 1 continua obrigatorio mesmo com aviso pendente.
+Os seis TOMLs exigem o envio conjunto pelo proprio especialista antes do bloco final. O orquestrador fornece um ID unico a cada acionamento e registra um item em `notifications` por par (`execucao_id`, `transport`), com a evidencia ou a falha de cada servico. Uma falha de envio nao reexecuta a implementacao nem o transporte ja confirmado. Registros antigos sao preservados como historico. O Checkpoint 1 continua obrigatorio mesmo com aviso pendente.
 
 A permissao `send_factory_notification` no YAML limita o envio a esse script e canal. No QA, a credencial e exclusiva do aviso de infraestrutura, nao dos testes do produto. O configurador interativo e executado pelo humano, nao durante uma etapa de subagente.
 
@@ -211,6 +229,7 @@ A permissao `send_factory_notification` no YAML limita o envio a esse script e c
 
 ```powershell
 .\scripts\testar-slack.ps1
+.\scripts\testar-notificacoes.ps1
 ```
 
 Os testes simulam a API e a entrada do configurador, usam somente credenciais ficticias em memoria e restauram as variaveis do processo. Nao fazem chamadas externas nem alteram as variaveis persistidas do usuario. Referencias: [chat.postMessage](https://docs.slack.dev/reference/methods/chat.postMessage/) e [tipos de tokens](https://docs.slack.dev/authentication/tokens/).
